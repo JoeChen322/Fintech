@@ -17,10 +17,13 @@ jobs:
         uses: trsvchn/colab-badge-action@v4
         with:
           target_branch: main
-          check: "latest"
+          check: "all"
+          update: "true"
+          verbose: "true"
 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: auto-update Colab badges"
-          file_pattern: "*.ipynb *.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
