@@ -7,6 +7,7 @@ This is a **needs-based recommendation system** project for a wealth management 
 ### Objective
 
 Build a machine learning system that:
+
 1. **Estimates investment needs** for customers (binary classification)
 2. **Recommends suitable financial products** based on customer profiles and risk tolerance
 
@@ -21,27 +22,30 @@ Build a machine learning system that:
 ## Dataset Structure
 
 ### Needs Dataset (Customer Data)
-| Feature | Description |
-|---------|-------------|
-| ID | Customer ID |
-| Age | Age in years (mean: 55.25) |
-| Gender | Female=1, Male=0 |
-| FamilyMembers | Number of family members (mean: 2.51) |
-| FinancialEducation | Normalized financial education level |
-| RiskPropensity | Normalized risk propensity from MIFID profile |
-| Income | Income in thousands of euros |
-| Wealth | Sum of investments and cash accounts |
-| IncomeInvestment | **Target**: 1=High propensity for income investing |
+
+| Feature                | Description                                              |
+| ---------------------- | -------------------------------------------------------- |
+| ID                     | Customer ID                                              |
+| Age                    | Age in years (mean: 55.25)                               |
+| Gender                 | Female=1, Male=0                                         |
+| FamilyMembers          | Number of family members (mean: 2.51)                    |
+| FinancialEducation     | Normalized financial education level                     |
+| RiskPropensity         | Normalized risk propensity from MIFID profile            |
+| Income                 | Income in thousands of euros                             |
+| Wealth                 | Sum of investments and cash accounts                     |
+| IncomeInvestment       | **Target**: 1=High propensity for income investing       |
 | AccumulationInvestment | **Target**: 1=High propensity for accumulation investing |
 
 ### Products Dataset
-| Feature | Description |
-|---------|-------------|
-| IDProduct | Product identifier |
-| Type | 1=Accumulation, 0=Income |
-| Risk | Normalized risk score [0,1] |
+
+| Feature   | Description                 |
+| --------- | --------------------------- |
+| IDProduct | Product identifier          |
+| Type      | 1=Accumulation, 0=Income    |
+| Risk      | Normalized risk score [0,1] |
 
 ### Target Variables
+
 - **IncomeInvestment**: For clients who want income (lump-sum investing, typically older clients)
 - **AccumulationInvestment**: For clients who want to accumulate wealth (dollar-cost averaging, typically younger clients)
 
@@ -83,12 +87,12 @@ Build a machine learning system that:
 
 ### Model Performance (Test Set)
 
-| Model | Target | Accuracy | Precision | Recall | F1 |
-|-------|--------|----------|-----------|--------|-----|
-| XGBoost | Income | 76.3% | 76.5% | 55.2% | 64.1% |
-| XGBoost | Accumulation | 76.8% | 78.3% | 75.8% | 77.0% |
-| MLP | Income | 76.3% | 78.4% | 52.9% | 63.1% |
-| MLP | Accumulation | 78.4% | 84.9% | 70.4% | 77.0% |
+| Model   | Target       | Accuracy | Precision | Recall | F1    |
+| ------- | ------------ | -------- | --------- | ------ | ----- |
+| XGBoost | Income       | 76.3%    | 76.5%     | 55.2%  | 64.1% |
+| XGBoost | Accumulation | 76.8%    | 78.3%     | 75.8%  | 77.0% |
+| MLP     | Income       | 76.3%    | 78.4%     | 52.9%  | 63.1% |
+| MLP     | Accumulation | 78.4%    | 84.9%     | 70.4%  | 77.0% |
 
 ---
 
@@ -141,21 +145,7 @@ Build a machine learning system that:
   - Scatter histogram plots
   - Candidate response-covariate relationships
 
-### Priority 3: Recommendation System Extension
-
-- [ ] **Implement Income Product Recommender**
-  - Currently only Accumulation products are recommended
-  - Build matching logic for Income investment needs
-
-- [ ] **Implement Voting/Stacking for Recommendations**
-  - Use multiple models for final recommendation
-
-- [ ] **Add More Matching Criteria**
-  - Age-based matching
-  - Wealth-based matching
-  - Multi-factor scoring
-
-### Priority 4: Advanced Recommender Systems
+### Priority 3: Advanced Recommender Systems
 
 - [ ] **SVD-based Recommender**
   - User-item interaction matrix
@@ -167,7 +157,7 @@ Build a machine learning system that:
   - PyTorch implementation
   - Compress user-item interactions
 
-### Priority 5: Feature Engineering
+### Priority 4: Feature Engineering
 
 - [ ] **Additional Features**
   - Age groups (young/mid-career/mature)
@@ -178,7 +168,7 @@ Build a machine learning system that:
   - Financial advisor logic replication
   - Risk profiling improvements
 
-### Priority 6: Validation & Documentation
+### Priority 5: Validation & Documentation
 
 - [ ] **Model Ranking Rules**
   - Define primary metric (e.g., Recall for identifying high-value prospects)
@@ -230,15 +220,18 @@ Age Stages:
 ## Key Insights from Analysis
 
 ### Feature Importance (XGBoost)
+
 1. **Income Investment**: RiskPropensity, Age, Income_log, Wealth_log
 2. **Accumulation Investment**: Age, Wealth_log, RiskPropensity, Income_log
 
 ### SHAP Findings
+
 - Older customers → Higher IncomeInvestment propensity
 - Higher RiskPropensity → Higher AccumulationInvestment propensity
 - Wealth and Income strongly influence both needs
 
 ### Recommendations Coverage
+
 - 74.28% of target clients received valid recommendations
 - Most recommended products: IDs 1, 5, 9
 
