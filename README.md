@@ -117,7 +117,31 @@ Build a machine learning system that:
   - Ray Tune
   - Keras Tuner
 
-### Priority 2: Recommendation System Extension
+### Priority 2: Enhanced EDA (From HINTS)
+
+- [ ] **Outlier Detection**
+  - Box plots for all numeric variables
+  - Identify extreme values in Wealth, Income, Age
+
+- [ ] **Normality Testing**
+  - Q-Q plots for continuous variables
+  - Assess distribution assumptions
+
+- [ ] **Violin Plots**
+  - Compare distributions by Gender groups
+  - Compare distributions by FinancialEducation levels
+  - Group-wise density curve analysis (peaks, valleys, tails)
+
+- [ ] **Demographic Distribution Analysis**
+  - Distribution plots by age groups (young/mid-career/mature)
+  - Wealth and Income distributions by demographic segments
+
+- [ ] **Dependence Analysis**
+  - Joint plots for target vs explanatory variables
+  - Scatter histogram plots
+  - Candidate response-covariate relationships
+
+### Priority 3: Recommendation System Extension
 
 - [ ] **Implement Income Product Recommender**
   - Currently only Accumulation products are recommended
@@ -131,7 +155,7 @@ Build a machine learning system that:
   - Wealth-based matching
   - Multi-factor scoring
 
-### Priority 3: Advanced Recommender Systems
+### Priority 4: Advanced Recommender Systems
 
 - [ ] **SVD-based Recommender**
   - User-item interaction matrix
@@ -143,7 +167,7 @@ Build a machine learning system that:
   - PyTorch implementation
   - Compress user-item interactions
 
-### Priority 4: Feature Engineering
+### Priority 5: Feature Engineering
 
 - [ ] **Additional Features**
   - Age groups (young/mid-career/mature)
@@ -154,7 +178,7 @@ Build a machine learning system that:
   - Financial advisor logic replication
   - Risk profiling improvements
 
-### Priority 5: Validation & Documentation
+### Priority 6: Validation & Documentation
 
 - [ ] **Model Ranking Rules**
   - Define primary metric (e.g., Recall for identifying high-value prospects)
