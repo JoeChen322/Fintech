@@ -147,12 +147,12 @@ Build a machine learning system that:
 
 ### Priority 3: Advanced Recommender Systems
 
-- [ ] **SVD-based Recommender**
+- [x] **SVD-based Recommender**
   - User-item interaction matrix
   - Latent factor analysis
   - sklearn TruncatedSVD
 
-- [ ] **Autoencoder Recommender**
+- [x] **Autoencoder Recommender**
   - Non-linear representation learning
   - PyTorch implementation
   - Compress user-item interactions
