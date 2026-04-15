@@ -44,6 +44,22 @@ Build a machine learning system that:
 | Type      | 1=Accumulation, 0=Income    |
 | Risk      | Normalized risk score [0,1] |
 
+### Product Information
+
+| IDProduct | Product description                                         |
+| --------- | ----------------------------------------------------------- |
+| 1         | Balanced Mutual Fund                                        |
+| 2         | Income Conservative Unit-Linked (Life Insurance)            |
+| 3         | Fixed Income Mutual Fund                                    |
+| 4         | Balanced High Dividend Mutual Fund                          |
+| 5         | Balanced Mutual Fund                                        |
+| 6         | Defensive Flexible Allocation Unit-Linked (Life Insurance)  |
+| 7         | Aggressive Flexible Allocation Unit-Linked (Life Insurance) |
+| 8         | Balanced Flexible Allocation Unit-Linkled (Life Insurance)  |
+| 9         | Cautious Allocation Segregated Account                      |
+| 10        | Fixed Income Segregated Account                             |
+| 11        | Total Return Aggressive Allocation Segregated Account       |
+
 ### Target Variables
 
 - **IncomeInvestment**: For clients who want income (lump-sum investing, typically older clients)
