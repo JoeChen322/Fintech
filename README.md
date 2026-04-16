@@ -140,9 +140,10 @@ Build a machine learning system that:
 ### Validation & Documentation
 
 - [ ] **Model Ranking Rules**
-  - Define primary metric (e.g., Recall for identifying high-value prospects)
-  - Define sufficiency thresholds
-  - Confusion matrix analysis
+  - Define primary metric
+  - Consider the [MiFID/IDD](https://eur-lex.europa.eu/eli/dir/2014/65/oj/eng)
+  - Under the regulatory framework of MiFID and IDD, "consumer protection" and the "suitability principle (selling the right product to the right person)" are absolute red lines
+  -
 
 - [ ] **Local Explanations**
   - Individual SHAP prediction explanations
