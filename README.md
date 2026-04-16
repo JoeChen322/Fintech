@@ -156,6 +156,13 @@ Build a machine learning system that:
 
 ---
 
+## File Organization
+
+- `EDA.ipynb`
+- `classification-ml-models.ipynb`: machine learning models of classification
+- `classification-dl-models.ipynb`: deep learning models of classification
+- `recommend-system.ipynb`
+
 ## Submission Requirements
 
 - **Email**: raffaele.zenti@wealthype.it
