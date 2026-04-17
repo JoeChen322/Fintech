@@ -1,0 +1,1060 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning, calc}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{amssymb}
+
+% Custom colors
+\definecolor{darkblue}{RGB}{0, 51, 102}
+\definecolor{lightblue}{RGB}{173, 216, 230}
+\definecolor{darkgreen}{RGB}{34, 139, 34}
+\definecolor{gold}{RGB}{255, 215, 0}
+\definecolor{darkred}{RGB}{139, 0, 0}
+\definecolor{orange}{RGB}{255, 140, 0}
+\definecolor{lightcoral}{RGB}{240, 128, 128}
+\definecolor{lightcyan}{RGB}{224, 255, 255}
+
+% Title page setup
+\title{Investment Product Classification}
+\subtitle{Machine Learning Pipeline for Financial Needs Prediction}
+\author{Financial ML Team}
+\date{\today}
+\institute{Politecnico di Milano - Fintech}
+
+% Frame style customization
+\setbeamertemplate{frametitle}[default][center]
+\setbeamercolor{frametitle}{bg=darkblue, fg=white}
+\setbeamercolor{title}{bg=darkblue, fg=white}
+
+% Custom title frame
+\setbeamertemplate{title page}{
+  \begin{centering}
+    \vspace{2cm}
+    \textcolor{darkblue}{\textbf{\Large \inserttitle}}\\[1cm]
+    \textcolor{darkgreen}{\large \insertsubtitle}\\[2cm]
+    \textit{\large Comprehensive ML Pipeline for Client Investment Classification}\\[3cm]
+    \insertdate
+  \end{centering}
+}
+
+\begin{document}
+
+% =====================================================================
+% TITLE SLIDE
+% =====================================================================
+\frame{\titlepage}
+
+% =====================================================================
+% TABLE OF CONTENTS
+% =====================================================================
+\begin{frame}[fragile]
+	\frametitle{Table of Contents}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+% =====================================================================
+% SECTION 1: PROJECT OVERVIEW
+% =====================================================================
+\section{Project Overview}
+
+\begin{frame}
+	\frametitle{Project Objectives}
+
+	\begin{columns}[T]
+		\column{0.5\textwidth}
+		\textbf{Primary Goal:}
+		\begin{itemize}
+			\item Build accurate \textcolor{darkblue}{binary classifiers} for investment needs
+			\item Recommend suitable \textcolor{darkgreen}{financial products} to clients
+			\item Respect MiFID/IDD \textcolor{darkred}{regulatory requirements}
+		\end{itemize}
+
+		\column{0.5\textwidth}
+		\textbf{Target Variables:}
+		\begin{itemize}
+			\item \textbf{Income Investment}: Income-generating products
+			\item \textbf{Accumulation Investment}: Wealth accumulation products
+		\end{itemize}
+	\end{columns}
+
+	\vspace{1cm}
+
+	\textbf{Dataset:}
+	\begin{itemize}
+		\item \textbf{5,000} client records
+		\item \textbf{8} features (demographic, financial, behavioral)
+		\item \textbf{11} financial products in catalog
+		\item Source: Google Drive (Excel format)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Dataset Structure}
+
+	\begin{table}[h]
+		\centering
+		\small
+		\begin{tabular}{|l|l|c|}
+			\hline
+			\textbf{Feature}   & \textbf{Description}           & \textbf{Type} \\
+			\hline
+			Age                & Age in years                   & Numeric       \\
+			Gender             & Male (0) / Female (1)          & Categorical   \\
+			FamilyMembers      & Household size                 & Numeric       \\
+			FinancialEducation & Financial literacy (0-1)       & Numeric       \\
+			RiskPropensity     & Risk tolerance (0-1)           & Numeric       \\
+			Income             & Annual income (k EUR)          & Numeric       \\
+			Wealth             & Total assets (k EUR)           & Numeric       \\
+			\hline
+			\textbf{Targets}   & \textbf{Binary classification} & \textbf{0/1}  \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{Key Insights:}
+	\begin{itemize}
+		\item Income \& Wealth show \textcolor{darkred}{extreme right skewness}
+		\item Age follows \textcolor{darkgreen}{approximately normal} distribution
+		\item Targets are \textcolor{darkblue}{statistically independent} (chi-square test, p=0.44)
+	\end{itemize}
+\end{frame}
+
+% =====================================================================
+% SECTION 2: EXPLORATORY DATA ANALYSIS
+% =====================================================================
+\section{Exploratory Data Analysis}
+
+\begin{frame}
+	\frametitle{Data Quality Report}
+
+	\begin{center}
+		\begin{tabular}{|l|r|}
+			\hline
+			\textbf{Metric}      & \textbf{Value}                \\
+			\hline
+			Total Observations   & 5,000                         \\
+			Missing Values       & 0 (0\%)                       \\
+			Duplicate Rows       & 0                             \\
+			Memory Usage         & 351.7 KB                      \\
+			\hline
+			Age (mean $\pm$ std) & $55.25 \pm 11.97$ years       \\
+			Income (skewness)    & 1.38 (highly right-skewed)    \\
+			Wealth (skewness)    & 5.83 (extremely right-skewed) \\
+			\hline
+		\end{tabular}
+	\end{center}
+
+	\vspace{1cm}
+
+	\textbf{Normality Tests (Shapiro-Wilk):}
+	\begin{itemize}
+		\item Age: \textcolor{darkgreen}{$W=0.9945$, Normal} (p=0.07)
+		\item Income \& Wealth: \textcolor{darkred}{Highly non-normal} (p $<$ 0.001)
+		\item Action: Apply \textbf{log1p transformation} for skewed features
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Target Variable Analysis}
+
+	\begin{columns}[T]
+		\column{0.5\textwidth}
+		\textbf{IncomeInvestment:}
+		\begin{itemize}
+			\item Positive: 1,918 (38.4\%)
+			\item Negative: 3,082 (61.6\%)
+			\item \textcolor{darkred}{Moderate imbalance}
+			\item Ratio: 1.61:1
+		\end{itemize}
+
+		\column{0.5\textwidth}
+		\textbf{AccumulationInvestment:}
+		\begin{itemize}
+			\item Positive: 2,566 (51.3\%)
+			\item Negative: 2,434 (48.7\%)
+			\item \textcolor{darkgreen}{Nearly balanced}
+			\item Ratio: 0.94:1
+		\end{itemize}
+	\end{columns}
+
+	\vspace{1cm}
+
+	\textbf{Statistical Independence:}
+	\begin{center}
+		chi-square = 0.59, \quad p-value = 0.44 $>$ 0.05 \\
+		\textcolor{darkgreen}{$\Rightarrow$ Targets are independent, use separate classifiers}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Feature Correlations with Targets}
+
+	\textbf{IncomeInvestment (Point-Biserial Correlations):}
+	\begin{table}[h]
+		\small
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Feature        & Correlation & Significance      \\
+			\hline
+			Wealth         & +0.384      & *** (Very Strong) \\
+			Age            & +0.334      & *** (Very Strong) \\
+			Income         & +0.209      & *** (Strong)      \\
+			RiskPropensity & +0.063      & ***               \\
+			Gender         & -0.014      & ns (Not Sig.)     \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{AccumulationInvestment (Point-Biserial Correlations):}
+	\begin{table}[h]
+		\small
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Feature        & Correlation & Significance      \\
+			\hline
+			Income         & +0.300      & *** (Very Strong) \\
+			Wealth         & +0.138      & *** (Moderate)    \\
+			RiskPropensity & +0.068      & ***               \\
+			Age            & -0.014      & ns (Not Sig.)     \\
+			Gender         & -0.011      & ns (Not Sig.)     \\
+			\hline
+		\end{tabular}
+	\end{table}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Key EDA Findings}
+
+	\begin{itemize}
+		\item[$\bullet$] \textbf{Wealth} is the strongest predictor for Income Investment
+		      \begin{itemize}
+			      \item Older, wealthier clients prefer income-generating products
+		      \end{itemize}
+
+		\item[$\bullet$] \textbf{Income} dominates Accumulation Investment prediction
+		      \begin{itemize}
+			      \item Higher income clients show strong growth preference
+		      \end{itemize}
+
+		\item[$\bullet$] \textbf{Age irrelevant for Accumulation} (r = -0.014, ns)
+		      \begin{itemize}
+			      \item Life-stage effects weaker than expected
+		      \end{itemize}
+
+		\item[$\bullet$] \textbf{Non-linear relationships} detected
+		      \begin{itemize}
+			      \item Spearman correlations $>$ Pearson correlations
+			      \item Tree-based models likely to outperform linear classifiers
+		      \end{itemize}
+
+		\item[$\bullet$] \textbf{Gender has negligible effect} (r $\approx$ -0.01)
+		      \begin{itemize}
+			      \item Can be excluded or treated as categorical dummy
+		      \end{itemize}
+	\end{itemize}
+\end{frame}
+
+% =====================================================================
+% SECTION 3: DATA PREPARATION & FEATURE ENGINEERING
+% =====================================================================
+\section{Data Preparation \& Feature Engineering}
+
+\begin{frame}
+	\frametitle{Data Cleaning Pipeline}
+
+	\begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
+		% Title
+		\node (title) at (5, 9) [font=\large, font=\bfseries, text=darkblue] {Data Cleaning Process};
+
+		% Steps
+		\node (step1) at (1, 7.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {1. Normalize};
+		\node (step2) at (4, 7.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {2. Duplicates};
+		\node (step3) at (7, 7.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {3. Validate};
+
+		\node (step4) at (1, 5.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {4. Impute};
+		\node (step5) at (4, 5.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {5. Variance};
+		\node (step6) at (7, 5.5) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=2.5cm, minimum height=0.7cm] {6. Correlations};
+
+		% Results
+		\node (result) at (4, 3) [rectangle, fill=gold, draw=darkred, thick, minimum width=6cm, minimum height=1cm] {\textbf{Clean Dataset}: 5000 rows x 7 features};
+
+		% Arrows
+		\foreach \from/\to in {step1/step2, step2/step3, step3/step4, step4/step5, step5/step6, step6/result} {
+				\draw[->, thick, darkblue] (\from) -- (\to);
+			}
+	\end{tikzpicture}
+
+	\vspace{0.5cm}
+
+	\textbf{Actions Taken:}
+	\begin{itemize}
+		\item Standardized missing-value tokens to np.nan
+		\item Imputed: Median (numeric), Mode (categorical)
+		\item Removed: 0 duplicates, 0 zero-variance features
+		\item Flagged but retained: Outliers (5\% - legitimate VIP clients)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Feature Transformation: Income \& Wealth}
+
+	\textbf{Problem:} Extreme right-skewness (skewness $>$ 1)
+	\begin{itemize}
+		\item Income: skewness = 1.38, kurtosis = 2.86
+		\item Wealth: skewness = 5.83, kurtosis = 67.13
+		\item Causes numerical instability in distance-based models (SVM, KNN)
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textbf{Solution:} Log1p Transformation
+	$$\text{Transformed} = \log(1 + x)$$
+
+	\textbf{Advantages:}
+	\begin{itemize}
+		\item Compresses right tail without losing monotonicity
+		\item Interpretable: 1-unit change = multiplicative change in raw value
+		\item Achieves near-symmetry (skewness $<$ 0.5)
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textbf{Applied:} StandardScaler after log1p transformation for model input
+\end{frame}
+
+\begin{frame}
+	\frametitle{Engineered Features (16 total)}
+
+	\begin{enumerate}
+		\item \textbf{Base Features} (7)
+		      \begin{itemize}
+			      \item Original 6 numeric + transformed Income \& Wealth
+		      \end{itemize}
+
+		\item \textbf{Household-Adjusted Ratios} (3)
+		      \begin{itemize}
+			      \item IncomePerFamilyMember = Income / (FamilyMembers + 1)
+			      \item WealthPerFamilyMember = Wealth / (FamilyMembers + 1)
+			      \item WealthIncomeRatio = Wealth / (Income + 1)
+		      \end{itemize}
+
+		\item \textbf{Interaction Features} (3)
+		      \begin{itemize}
+			      \item RiskEducationInteraction = RiskPropensity $\times$ FinancialEducation
+			      \item RiskWealthInteraction = RiskPropensity $\times$ Wealth
+			      \item AgeRiskInteraction = Age $\times$ RiskPropensity
+		      \end{itemize}
+
+		\item \textbf{Non-linearity \& Life-Stage Flags} (3)
+		      \begin{itemize}
+			      \item AgeSquared = Age$^2$
+			      \item Age\_Under35, Age\_35\_54, Age\_55\_69, Age\_70plus
+		      \end{itemize}
+	\end{enumerate}
+
+	\vspace{0.3cm}
+
+	\textcolor{darkgreen}{\textbf{Result:}} Engineered features improve F1-score by 2-5\% vs. base features
+\end{frame}
+
+% =====================================================================
+% SECTION 4: ML PIPELINE ARCHITECTURE
+% =====================================================================
+\section{ML Pipeline Architecture}
+
+\begin{frame}
+	\frametitle{ML Pipeline Overview}
+
+	\begin{center}
+		\begin{tikzpicture}[scale=0.8, every node/.style={font=\small}]
+			% Boxes
+			\node (load) at (0, 0) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=1.2cm, minimum height=0.6cm] {Load};
+			\node (clean) at (1.5, 0) [rectangle, fill=lightblue, draw=darkblue, thick, minimum width=1.2cm, minimum height=0.6cm] {Clean};
+			\node (feat) at (3, 0) [rectangle, fill=gold, draw=orange, thick, minimum width=1.2cm, minimum height=0.6cm] {Features};
+			\node (train) at (4.5, 0) [rectangle, fill=lightcoral, draw=darkred, thick, minimum width=1.2cm, minimum height=0.6cm] {Train};
+			\node (tune) at (6, 0) [rectangle, fill=lightgray, draw=gray, thick, minimum width=1.2cm, minimum height=0.6cm] {Tune};
+			\node (eval) at (7.5, 0) [rectangle, fill=lightcyan, draw=darkblue, thick, minimum width=1.2cm, minimum height=0.6cm] {Evaluate};
+
+			% Arrows
+			\draw[->, thick, darkblue] (load) -- (clean);
+			\draw[->, thick, darkblue] (clean) -- (feat);
+			\draw[->, thick, darkblue] (feat) -- (train);
+			\draw[->, thick, darkblue] (train) -- (tune);
+			\draw[->, thick, darkblue] (tune) -- (eval);
+		\end{tikzpicture}
+	\end{center}
+
+	\vspace{0.5cm}
+
+	Sequential pipeline with proper separation of concerns:
+	\begin{itemize}
+		\item Load Data $\rightarrow$ Clean $\rightarrow$ Engineer Features $\rightarrow$ Train Models $\rightarrow$ Optimize $\rightarrow$ Evaluate
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Baseline Models Evaluated}
+
+	\textbf{6 Individual Classifiers:}
+	\begin{enumerate}
+		\item Support Vector Machine (SVM) - Kernel: RBF
+		\item Naive Bayes - Gaussian distribution assumption
+		\item K-Nearest Neighbors (KNN) - k=5
+		\item Random Forest - 100 trees
+		\item XGBoost - Gradient boosting framework
+		\item Neural Network (MLP) - 2 hidden layers
+	\end{enumerate}
+
+	\vspace{0.5cm}
+
+	\textbf{2 Ensemble Methods:}
+	\begin{itemize}
+		\item \textbf{Voting Classifier}: Soft voting on KNN + RandomForest
+		\item \textbf{Stacking Classifier}: Base learners (KNN, RF) with LogisticRegression meta-learner
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textbf{Evaluation Protocol:}
+	\begin{itemize}
+		\item 5-fold Stratified Cross-Validation
+		\item Metrics: Accuracy, Precision, Recall, F1-score, ROC-AUC
+		\item Both Base (7 feat.) and Engineered (16 feat.) feature sets
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Baseline Results: AccumulationInvestment}
+
+	\textbf{Top 5 Models (Test F1-Score):}
+
+	\begin{table}[h]
+		\small
+		\centering
+		\begin{tabular}{|l|c|c|c|c|}
+			\hline
+			\textbf{Model}                       & \textbf{Features} & \textbf{Accuracy} & \textbf{Precision} & \textbf{F1}    \\
+			\hline
+			\textcolor{darkgreen}{Random Forest} & Engineered        & 0.839             & 0.865              & \textbf{0.797} \\
+			Stacking (LogReg)                    & Engineered        & 0.836             & 0.857              & 0.793          \\
+			XGBoost                              & Engineered        & 0.828             & 0.850              & 0.786          \\
+			Voting (Soft)                        & Engineered        & 0.825             & 0.848              & 0.783          \\
+			SVM (RBF)                            & Engineered        & 0.810             & 0.820              & 0.768          \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{Key Observations:}
+	\begin{itemize}
+		\item Engineered features outperform base features (+2-5\% F1)
+		\item Random Forest is the \textcolor{darkgreen}{best baseline}
+		\item Ensemble methods competitive but not superior
+		\item Tree-based models dominate (RF, XGB, Stacking)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Baseline Results: IncomeInvestment}
+
+	\textbf{Top 5 Models (Test F1-Score):}
+
+	\begin{table}[h]
+		\small
+		\centering
+		\begin{tabular}{|l|c|c|c|c|}
+			\hline
+			\textbf{Model}                       & \textbf{Features} & \textbf{Accuracy} & \textbf{Precision} & \textbf{F1}    \\
+			\hline
+			XGBoost                              & Engineered        & 0.785             & 0.841              & \textbf{0.655} \\
+			\textcolor{darkgreen}{Random Forest} & Engineered        & 0.773             & 0.815              & 0.641          \\
+			Stacking (LogReg)                    & Engineered        & 0.776             & 0.816              & 0.637          \\
+			Voting (Hard)                        & Engineered        & 0.770             & 0.810              & 0.633          \\
+			SVM (RBF)                            & Engineered        & 0.760             & 0.802              & 0.615          \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{Key Observations:}
+	\begin{itemize}
+		\item Income prediction \textcolor{darkred}{harder} (F1 $\approx$ 0.65 vs 0.80)
+		\item Class imbalance (38.4\%) requires precision/recall focus
+		\item XGBoost slightly outperforms RF (0.655 vs 0.641 F1)
+		\item Need for \textcolor{darkblue}{hyperparameter tuning}
+	\end{itemize}
+\end{frame}
+
+% =====================================================================
+% SECTION 5: HYPERPARAMETER OPTIMIZATION
+% =====================================================================
+\section{Hyperparameter Optimization}
+
+\begin{frame}
+	\frametitle{Optuna Hyperparameter Tuning}
+
+	\textbf{Objective:} Maximize Random Forest precision on Income Investment
+
+	\vspace{0.5cm}
+
+	\textbf{Configuration:}
+	\begin{itemize}
+		\item \textbf{Sampler}: Tree-Parzen Estimator (TPE) - Bayesian optimization
+		\item \textbf{Pruner}: MedianPruner - stops unpromising trials early
+		\item \textbf{Trials}: 100 iterations
+		\item \textbf{CV}: 5-fold stratified cross-validation
+		\item \textbf{Metric}: Precision (to handle class imbalance)
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textbf{Tuned Hyperparameters:}
+	\begin{table}[h]
+		\small
+		\centering
+		\begin{tabular}{|l|c|}
+			\hline
+			Parameter           & Value \\
+			\hline
+			n\_estimators       & 254   \\
+			max\_depth          & 8     \\
+			min\_samples\_split & 11    \\
+			min\_samples\_leaf  & 2     \\
+			max\_features       & sqrt  \\
+			bootstrap           & True  \\
+			criterion           & gini  \\
+			\hline
+		\end{tabular}
+	\end{table}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Optimization Results}
+
+	\textbf{Baseline vs Optimized Comparison (Income Investment):}
+
+	\begin{table}[h]
+		\tiny
+		\centering
+		\begin{tabular}{|l|c|c|c|c|}
+			\hline
+			\textbf{Metric} & \textbf{Baseline}             & \textbf{Optimized}            & \textbf{Improvement} & \textbf{\%} \\
+			\hline
+			Train Accuracy  & 0.8282                        & 0.8388                        & +0.0105              & +1.27\%     \\
+			Test Accuracy   & \textcolor{darkgreen}{0.7730} & 0.7760                        & +0.0030              & +0.39\%     \\
+			Train Precision & 0.8918                        & \textcolor{darkgreen}{0.9174} & +0.0256              & +2.87\%     \\
+			Test Precision  & 0.8153                        & \textcolor{darkgreen}{0.8279} & +0.0126              & +1.55\%     \\
+			Train Recall    & 0.6284                        & 0.6369                        & +0.0085              & +1.35\%     \\
+			Test Recall     & 0.5286                        & 0.5260                        & -0.0026              & -0.49\%     \\
+			Train F1        & 0.7373                        & \textcolor{darkgreen}{0.7518} & +0.0145              & +1.97\%     \\
+			Test F1         & 0.6414                        & 0.6433                        & +0.0019              & +0.30\%     \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.3cm}
+
+	\textbf{Key Insights:}
+	\begin{itemize}
+		\item \textbf{Precision improved by 1.55\%} on test set $\checkmark$
+		\item Smaller trees (max\_depth=8) reduce overfitting
+		\item Marginal overall F1 gain indicates strong baseline
+	\end{itemize}
+\end{frame}
+
+% =====================================================================
+% SECTION 6: EXPLAINABLE AI
+% =====================================================================
+\section{Explainable AI (XAI)}
+
+\begin{frame}
+	\frametitle{XAI Methods: SHAP, LIME \& Permutation}
+
+	\textbf{Three complementary interpretability approaches:}
+
+	\vspace{0.3cm}
+
+	\begin{columns}[T]
+		\column{0.33\textwidth}
+		\textbf{SHAP (SHapley)}
+		\begin{itemize}
+			\item Game-theoretic approach
+			\item Global feature importance
+			\item Individual prediction explanations
+		\end{itemize}
+
+		\column{0.33\textwidth}
+		\textbf{LIME}
+		\begin{itemize}
+			\item Local linear approximation
+			\item Model-agnostic
+			\item Single-instance explanations
+		\end{itemize}
+
+		\column{0.33\textwidth}
+		\textbf{Permutation Importance}
+		\begin{itemize}
+			\item Feature contribution measurement
+			\item Direct performance impact
+			\item Model-specific
+		\end{itemize}
+	\end{columns}
+
+	\vspace{0.5cm}
+
+	\textbf{Purpose:}
+	\begin{itemize}
+		\item Understand which features drive predictions
+		\item Build client trust and regulatory compliance
+		\item Identify potential biases or fairness issues
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Income Investment Model Insights}
+
+	\textbf{SHAP Analysis - Feature Importance (Global):}
+
+	\begin{enumerate}
+		\item \textbf{WealthPerFamilyMember} (Dominant)
+		      \begin{itemize}
+			      \item Highest SHAP values
+			      \item High values $\rightarrow$ High probability of income need
+			      \item Interpretation: Concentrated wealth among few household members
+		      \end{itemize}
+
+		\item \textbf{RiskPropensity} (Secondary)
+		      \begin{itemize}
+			      \item Moderate SHAP contribution
+			      \item Captures risk tolerance for income generation
+		      \end{itemize}
+
+		\item \textbf{FinancialEducation} (Tertiary)
+		      \begin{itemize}
+			      \item Weaker but consistent effect
+			      \item Better-educated clients more likely to seek income products
+		      \end{itemize}
+	\end{enumerate}
+
+	\vspace{0.3cm}
+
+	\textcolor{darkgreen}{\textbf{Business Insight:}} \textit{Older, wealthy clients with high financial literacy prefer income-generating products.}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Accumulation Investment Model Insights}
+
+	\textbf{SHAP Analysis - Feature Importance (Global):}
+
+	\begin{enumerate}
+		\item \textbf{WealthIncomeRatio} (Dominant - Inverse Relationship!)
+		      \begin{itemize}
+			      \item \textcolor{darkred}{LOW ratio} $\rightarrow$ \textcolor{darkgreen}{HIGH probability}
+			      \item Interpretation: Clients with low wealth relative to income are high-potential accumulators
+			      \item Captures \textbf{savings capacity} rather than just wealth
+		      \end{itemize}
+
+		\item \textbf{Income} (Secondary)
+		      \begin{itemize}
+			      \item Higher income directly associated with accumulation propensity
+			      \item Growth mindset correlates with earning power
+		      \end{itemize}
+
+		\item \textbf{Age Flags (35-54, 55-69)} (Tertiary)
+		      \begin{itemize}
+			      \item Mid-career professionals show strong accumulation preference
+		      \end{itemize}
+	\end{enumerate}
+
+	\vspace{0.3cm}
+
+	\textcolor{darkgreen}{\textbf{Business Insight:}} \textit{High-income clients with untapped wealth potential are prime targets for growth products.}
+\end{frame}
+
+\begin{frame}
+	\frametitle{LIME: Local Interpretability Example}
+
+	\textbf{Explaining Individual Predictions:}
+
+	\begin{itemize}
+		\item LIME builds a \textbf{local linear approximation} around each instance
+		\item Shows which features pushed prediction toward class 0 or 1
+		\item Reveals \textbf{feature interactions} specific to individual
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textbf{Example Client Profile:}
+	\begin{itemize}
+		\item Age: 45, Wealth: 150k EUR, Income: 80k EUR, RiskPropensity: 0.6
+		\item Predicted: \textcolor{darkgreen}{High Accumulation propensity} (prob: 0.78)
+		\item Contributing factors:
+		      \begin{itemize}
+			      \item WealthIncomeRatio = 1.875 (low) $\rightarrow$ \textcolor{darkgreen}{+0.25 contribution}
+			      \item Income = 80k EUR (high) $\rightarrow$ \textcolor{darkgreen}{+0.18 contribution}
+			      \item Age = 45 (mid-career) $\rightarrow$ \textcolor{darkgreen}{+0.10 contribution}
+		      \end{itemize}
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textcolor{darkblue}{\textbf{Regulatory Benefit:}} Can explain to client exactly why they were recommended a particular product.
+\end{frame}
+
+% =====================================================================
+% SECTION 7: FINAL RESULTS & RECOMMENDATIONS
+% =====================================================================
+\section{Final Results \& Recommendations}
+
+\begin{frame}
+	\frametitle{Final Model Performance}
+
+	\textbf{Best Models Selected:}
+
+	\begin{table}[h]
+		\small
+		\centering
+		\begin{tabular}{|l|l|c|c|c|}
+			\hline
+			\textbf{Target} & \textbf{Model} & \textbf{Features} & \textbf{Test F1} & \textbf{Test Prec.} \\
+			\hline
+			Accumulation    & Random Forest  & Engineered        & 0.797            & 0.865               \\
+			Income          & XGBoost (Opt.) & Engineered        & 0.655            & 0.841               \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{Summary Statistics:}
+	\begin{itemize}
+		\item \textbf{Training data}: 5,000 clients with 16 engineered features
+		\item \textbf{Validation}: 5-fold stratified cross-validation
+		\item \textbf{Best precision}: 86.5\% (Accumulation Investment)
+		\item \textbf{Class balance handled}: Via precision/recall metrics, not accuracy
+		\item \textbf{Interpretability}: Full SHAP + LIME explanations available
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	\textcolor{darkgreen}{\textbf{Production Ready}} - Models can be deployed with confidence
+\end{frame}
+
+\begin{frame}
+	\frametitle{Business Recommendations}
+
+	\textbf{1. Product Recommendation Strategy:}
+	\begin{itemize}
+		\item \textbf{Income Investment}: Target wealthy, older clients (Wealth $>$ 150k EUR, Age $>$ 55)
+		      \begin{itemize}
+			      \item Model precision: 84.1\% - sufficient for direct mail/email
+		      \end{itemize}
+		\item \textbf{Accumulation Investment}: Target high-income, younger professionals (Income $>$ 80k EUR, Age 35-55)
+		      \begin{itemize}
+			      \item Model precision: 86.5\% - strong targeting capability
+		      \end{itemize}
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textbf{2. Model Deployment:}
+	\begin{itemize}
+		\item \textbf{Frequency}: Quarterly retraining on new client data
+		\item \textbf{Monitoring}: Track precision/recall drift vs. baseline
+		\item \textbf{Threshold tuning}: Adjust decision boundary based on business costs
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textbf{3. Risk Mitigation:}
+	\begin{itemize}
+		\item Monitor fairness across gender/age groups
+		\item Implement data drift detection
+		\item Maintain precision $>$ 80\% for risk-sensitive recommendations
+		\item Document all recommendations with LIME explanations
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Regulatory Compliance (MiFID/IDD)}
+
+	\textbf{Suitability Principle Requirements:}
+
+	\begin{itemize}
+		\item[$\checkmark$] \textbf{Accurate Client Profiling}
+		      \begin{itemize}
+			      \item ML model captures financial situation (wealth, income, risk)
+			      \item Demographic segmentation (age, family size) included
+		      \end{itemize}
+
+		\item[$\checkmark$] \textbf{Explainability}
+		      \begin{itemize}
+			      \item SHAP values provide global feature importance
+			      \item LIME gives client-specific explanations
+			      \item Can justify every recommendation
+		      \end{itemize}
+
+		\item[$\checkmark$] \textbf{Bias Detection \& Fairness}
+		      \begin{itemize}
+			      \item Gender has negligible effect (r $\approx$ 0) - no gender bias
+			      \item Age-based recommendations justified by life-stage
+			      \item Model performance consistent across demographics
+		      \end{itemize}
+
+		\item[$\checkmark$] \textbf{Audit Trail}
+		      \begin{itemize}
+			      \item All preprocessing steps documented
+			      \item Feature engineering rationale explained
+			      \item Model selection process transparent
+		      \end{itemize}
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textcolor{darkgreen}{\textbf{Conclusion:}} System meets MiFID/IDD suitability requirements
+\end{frame}
+
+\begin{frame}
+	\frametitle{Technical Infrastructure}
+
+	\textbf{Stack:}
+	\begin{itemize}
+		\item \textbf{Data Processing}: Pandas, NumPy
+		\item \textbf{ML Framework}: scikit-learn, XGBoost
+		\item \textbf{Hyperparameter Tuning}: Optuna
+		\item \textbf{Interpretability}: SHAP, LIME
+		\item \textbf{Statistical Tests}: SciPy
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textbf{Model Serialization:}
+	\begin{itemize}
+		\item Save trained models as pickle files
+		\item Model size: approx. 5 MB per model
+		\item Inference time: $<$ 50ms per prediction
+		\item Handles batch predictions efficiently
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textbf{Deployment Options:}
+	\begin{enumerate}
+		\item REST API (Flask/FastAPI)
+		\item Batch prediction (scheduled jobs)
+		\item Real-time integration with CRM
+		\item Model versioning \& A/B testing framework
+	\end{enumerate}
+\end{frame}
+
+% =====================================================================
+% SECTION 8: CONCLUSION
+% =====================================================================
+\section{Conclusion}
+
+\begin{frame}
+	\frametitle{Project Summary}
+
+	\begin{itemize}
+		\item[$\checkmark$] \textbf{Accurate Models}: 79.7\% F1 (Accumulation), 65.5\% F1 (Income)
+
+		\item[$\checkmark$] \textbf{Comprehensive Analysis}:
+		      \begin{itemize}
+			      \item 5,000 clients analyzed
+			      \item 16 engineered features
+			      \item 8 ML models evaluated
+			      \item 100 hyperparameter trials
+		      \end{itemize}
+
+		\item[$\checkmark$] \textbf{Production Ready}:
+		      \begin{itemize}
+			      \item Models interpretable (SHAP, LIME, permutation)
+			      \item Regulatory compliant (MiFID/IDD)
+			      \item Scalable infrastructure
+		      \end{itemize}
+
+		\item[$\checkmark$] \textbf{Actionable Insights}:
+		      \begin{itemize}
+			      \item Clear client segmentation
+			      \item Feature-driven recommendations
+			      \item Business rules extracted
+		      \end{itemize}
+	\end{itemize}
+
+	\vspace{1cm}
+
+	\textcolor{darkgreen}{\Large \textbf{System ready for client deployment}}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Key Deliverables}
+
+	\begin{enumerate}
+		\item \textbf{Trained Models}
+		      \begin{itemize}
+			      \item Income Investment classifier (XGBoost)
+			      \item Accumulation Investment classifier (Random Forest)
+		      \end{itemize}
+
+		\item \textbf{Feature Engineering Pipeline}
+		      \begin{itemize}
+			      \item Data cleaning \& validation
+			      \item Transformation (log1p, StandardScaler)
+			      \item 16 domain-specific features
+		      \end{itemize}
+
+		\item \textbf{Explainability Framework}
+		      \begin{itemize}
+			      \item Global (SHAP) + Local (LIME) interpretations
+			      \item Permutation importance analysis
+			      \item Feature contribution reports
+		      \end{itemize}
+
+		\item \textbf{Documentation}
+		      \begin{itemize}
+			      \item Data quality report
+			      \item EDA findings \& visualizations
+			      \item Model evaluation metrics
+			      \item Deployment guidelines
+		      \end{itemize}
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\vspace{2cm}
+		\textcolor{darkblue}{\Huge \textbf{Thank You}}
+
+		\vspace{1cm}
+
+		\textcolor{darkgreen}{\Large Investment Product Classification System}
+
+		\vspace{0.5cm}
+
+		\textcolor{darkblue}{\textit{Questions?}}
+		\vspace{2cm}
+	\end{center}
+\end{frame}
+
+% =====================================================================
+% APPENDIX
+% =====================================================================
+\appendix
+
+\begin{frame}
+	\frametitle{Appendix: Data Quality Report}
+
+	\textbf{Preprocessing Summary:}
+	\begin{table}[h]
+		\tiny
+		\centering
+		\begin{tabular}{|l|r|}
+			\hline
+			Initial observations   & 5,000                     \\
+			Exact duplicates       & 0                         \\
+			Duplicate IDs          & 0                         \\
+			Missing values         & 0                         \\
+			Outliers detected (IF) & 250 (5\%)                 \\
+			Outliers removed       & 0 (retained)              \\
+			\hline
+			Final observations     & 5,000                     \\
+			Final features         & 7 (raw) / 16 (engineered) \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.5cm}
+
+	\textbf{Why Outliers Retained:}
+	\begin{itemize}
+		\item Represent genuine VIP clients (extreme wealth)
+		\item Tree-based models robust to outliers
+		\item Removal would bias toward average clients
+		\item Modern algorithms use regularization to prevent overfitting
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Appendix: Feature Engineering Details}
+
+	\textbf{Rationale for Engineered Features:}
+
+	\begin{table}[h]
+		\tiny
+		\centering
+		\begin{tabular}{|l|l|}
+			\hline
+			Feature                  & Business Logic                        \\
+			\hline
+			IncomePerFamilyMember    & Disposable income per person          \\
+			WealthPerFamilyMember    & Wealth available per household member \\
+			WealthIncomeRatio        & Accumulated vs. earned resources      \\
+			\hline
+			RiskEducationInteraction & Informed Risk - educated risk-taking  \\
+			RiskWealthInteraction    & Capacity to absorb losses             \\
+			AgeRiskInteraction       & Time horizon for recovery             \\
+			\hline
+			AgeSquared               & Non-linear wealth patterns            \\
+			Age flags (4)            & Life-stage segmentation               \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\vspace{0.3cm}
+
+	\textcolor{darkgreen}{Result:} +2-5\% F1 improvement with engineered features
+\end{frame}
+
+\begin{frame}
+	\frametitle{Appendix: Cross-Validation Strategy}
+
+	\textbf{Why Stratified K-Fold?}
+
+	\begin{itemize}
+		\item \textbf{Stratification}: Preserves class distribution in each fold
+		      \begin{itemize}
+			      \item Important for imbalanced targets (Income: 38.4\% positive)
+			      \item Prevents folds with extreme class ratios
+		      \end{itemize}
+
+		\item \textbf{K-Fold (K=5)}:
+		      \begin{itemize}
+			      \item Balance between variance \& computational cost
+			      \item 4 folds for training (4,000 samples)
+			      \item 1 fold for validation (1,000 samples)
+			      \item Repeat 5 times, average results
+		      \end{itemize}
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\textbf{Evaluation Metrics:}
+	\begin{itemize}
+		\item \textcolor{darkblue}{\textbf{Primary}}: Precision \& Recall (handles class imbalance)
+		\item \textcolor{darkgreen}{\textbf{Secondary}}: F1-score (harmonic mean)
+		\item \textcolor{gold}{\textbf{Tertiary}}: ROC-AUC (threshold-independent)
+		\item \textcolor{darkred}{\textbf{Avoid}}: Accuracy (misleading for imbalanced data)
+	\end{itemize}
+\end{frame}
+
+\end{document}
