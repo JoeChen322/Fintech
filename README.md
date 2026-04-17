@@ -11,12 +11,6 @@ Build a machine learning system that:
 1. **Estimates investment needs** for customers (binary classification)
 2. **Recommends suitable financial products** based on customer profiles and risk tolerance
 
-### Why This Matters
-
-- **Personalization**: "Good personalization can lift revenues by up to 15 percent and increase marketing ROI by up to 30 percent" - McKinsey & Company
-- **Regulatory Compliance**: MIFID/IDD requires coherence between customer needs and financial products sold
-- **Next Best Action (NBA)**: Identifies optimal product recommendations for each client
-
 ---
 
 ## Dataset Structure
@@ -66,6 +60,8 @@ Build a machine learning system that:
 - **AccumulationInvestment**: For clients who want to accumulate wealth (dollar-cost averaging, typically younger clients)
 
 ---
+
+# EDA
 
 ## Project Tasks (To-Do List)
 
