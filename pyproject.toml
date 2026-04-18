@@ -5,9 +5,13 @@ description = "Fintech case study"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "autoflake>=2.3.3",
     "gdown>=6.0.0",
     "ipykernel>=7.2.0",
+    "isort>=8.0.1",
+    "lightgbm>=4.6.0",
     "matplotlib>=3.10.8",
+    "nbqa>=1.9.1",
     "openpyxl>=3.1.5",
     "optuna>=4.8.0",
     "pandas>=3.0.2",
