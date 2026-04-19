@@ -126,16 +126,40 @@
 \section{Data Preparation \& Feature Engineering}
 
 \begin{frame}
-	\frametitle{Feature Transformation: Income \& Wealth}
+	\frametitle{Feature Transformation and Engineering}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{1. Data Transformation (\texttt{DataTransformer})}
+			\begin{itemize}
+				\item \textbf{Numeric Conversion:} Coercion of mixed/string formats to continuous variables.
+				\item \textbf{Log Transformation:} Applied $\log(1+x)$ to highly skewed financial variables (\texttt{Wealth}, \texttt{Income}) to normalize distributions.
+				\item \textbf{Scaling:} \texttt{StandardScaler} applied post-engineering for stable convergence.
+			\end{itemize}
+			\vspace{0.3cm}
+			\textbf{2. Household Metrics}
+			\begin{itemize}
+				\item \texttt{WealthIncomeRatio}
+				\item \texttt{IncomePerFamilyMember}
+				\item \texttt{WealthPerFamilyMember}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{3. Interaction Features}
+			\begin{itemize}
+				\item \texttt{RiskEducationInteraction} ($Risk \times Edu$)
+				\item \texttt{RiskWealthInteraction} ($Risk \times \log(Wealth)$)
+				\item \texttt{AgeRiskInteraction} ($Age \times Risk$)
+			\end{itemize}
+			\vspace{0.3cm}
+			\textbf{4. Non-linearity \& Life-Stages}
+			\begin{itemize}
+				\item \texttt{AgeSquared}: Models the "Life-Cycle" curve (wealth peaking in mid-life).
+				\item \textbf{Age Bins}: One-hot flags for \texttt{Under35}, \texttt{35\_54}, \texttt{55\_69}, and \texttt{70plus}.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Engineered Features (16 total)}
-\end{frame}
-
-% =====================================================================
-% SECTION 4: ML PIPELINE ARCHITECTURE
-% =====================================================================
 \section{ML Workflow \& Hyperparameter Optimization \& Explainable AI (XAI)}
 
 \begin{frame}
