@@ -16,6 +16,9 @@
 \usetikzlibrary{shapes, arrows, positioning, calc}
 \usepackage{listings}
 \usepackage{fancyvrb}
+\usepackage[backend=biber,style=numeric]{biblatex}
+\addbibresource{references.bib}
+\setbeamertemplate{bibliography item}[text]
 \usepackage{amssymb}
 
 % Custom colors
@@ -119,7 +122,7 @@
 % =====================================================================
 % SECTION 4: ML PIPELINE ARCHITECTURE
 % =====================================================================
-\section{ML Pipeline \& Hyperparameter Optimization}
+\section{ML Pipeline \& Hyperparameter Optimization \& Explainable AI (XAI)}
 
 \begin{frame}
 	\frametitle{ML Pipeline Overview}
@@ -148,7 +151,6 @@
 % =====================================================================
 % SECTION 6: EXPLAINABLE AI
 % =====================================================================
-\section{Explainable AI (XAI)}
 
 \begin{frame}
 	\frametitle{XAI Methods: SHAP, LIME \& Permutation}
@@ -166,6 +168,8 @@
 	\frametitle{LIME: Local Interpretability Example}
 \end{frame}
 
+
+
 % =====================================================================
 % SECTION 7: FINAL RESULTS & RECOMMENDATIONS
 % =====================================================================
@@ -177,6 +181,7 @@
 
 \begin{frame}
 	\frametitle{Business Recommendations}
+	We use \cite{sharaf_survey_2022}
 \end{frame}
 
 \begin{frame}
@@ -197,7 +202,8 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Key Deliverables}
+	\frametitle{References}
+	\printbibliography
 \end{frame}
 
 \end{document}
