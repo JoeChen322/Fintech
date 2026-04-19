@@ -16,7 +16,13 @@
 \usetikzlibrary{shapes, arrows, positioning, calc}
 \usepackage{listings}
 \usepackage{fancyvrb}
-\usepackage[backend=biber,style=numeric]{biblatex}
+\usepackage[
+	backend=biber,
+	url=false,       
+    doi=false,   
+    isbn=false,   
+    eprint=false   
+	]{biblatex}
 \addbibresource{references.bib}
 \setbeamertemplate{bibliography item}[text]
 \usepackage{amssymb}
