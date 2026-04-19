@@ -80,16 +80,39 @@
 \section{Project Overview}
 
 \begin{frame}
-	\frametitle{Project Objectives}
+	\frametitle{Project Overview}
+
+	\resizebox{0.95\textwidth}{!}{
+		\begin{tikzpicture}[
+				box/.style={draw=darkblue, thick, fill=lightblue!20, minimum width=3.8cm, minimum height=1.5cm, align=center, rounded corners=2mm},
+				arrow/.style={-latex, thick, darkblue, line width=1.5pt}
+			]
+
+			% Nodes
+			\node[box] (eda) {\textbf{1. Data \& EDA}\\ Cleaning, Outliers,\\ Transformations};
+
+			\node[box, right=2cm of eda] (ml) {\textbf{2. Classification}\\ ML Baselines \& DCN\\ Needs Prediction};
+
+			\node[box, right=2cm of ml] (rec) {\textbf{3. Recommendation}\\ SVD \& Autoencoder\\ Product Matching};
+
+			% Arrows
+			\draw[arrow] (eda) -- (ml);
+			\draw[arrow] (ml) -- (rec) node[midway, above, font=\footnotesize] {Confidence Scores};
+
+			% Labels
+			\node[below=0.4cm of eda, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {EDA.ipynb};
+			\node[below=0.4cm of ml, text width=4.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {classification\_ml\_models.ipynb\\classification-dl-models.ipynb};
+			\node[below=0.4cm of rec, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {recommend-system.ipynb};
+
+		\end{tikzpicture}
+	}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Dataset Structure}
 \end{frame}
 
-% =====================================================================
-% SECTION 2: EXPLORATORY DATA ANALYSIS
-% =====================================================================
+
 \section{Exploratory Data Analysis}
 
 \begin{frame}
@@ -97,20 +120,9 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Target Variable Analysis}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Feature Correlations with Targets}
-\end{frame}
-
-\begin{frame}
 	\frametitle{Key EDA Findings}
 \end{frame}
 
-% =====================================================================
-% SECTION 3: DATA PREPARATION & FEATURE ENGINEERING
-% =====================================================================
 \section{Data Preparation \& Feature Engineering}
 
 \begin{frame}
