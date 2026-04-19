@@ -177,31 +177,148 @@
 \section{Deep Learning Approach}
 
 \begin{frame}
-	\frametitle{Deep Learning Model Architecture}
-	We use DCN \cite{guo_explainable_2023}
+	\frametitle{Deep Learning Model Architecture: DCN \cite{guo_explainable_2023}}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\centering
+			\resizebox{\linewidth}{!}{
+				\begin{tikzpicture}[
+						box/.style={draw, rounded corners, minimum width=2.5cm, minimum height=0.6cm, align=center},
+						arrow/.style={-latex, thick}
+					]
+
+					% Inputs
+					\node[box, fill=lightblue] (cat) {Categorical Features};
+					\node[box, fill=lightblue, right=0.5cm of cat] (cont) {Continuous Features};
+
+					% Embedding
+					\node[box, fill=lightcyan, below=0.6cm of cat] (embed) {Embedding Layer};
+
+					% Concat
+					\node[box, fill=orange!30, below=1.8cm of cat, xshift=1.6cm] (concat) {Concatenation ($x_0$)};
+
+					% Two paths
+					\node[box, fill=lightcoral!50, below=0.8cm of concat, xshift=-1.6cm] (cross) {Cross Network};
+					\node[box, fill=darkgreen!30, below=0.8cm of concat, xshift=1.6cm] (deep) {Deep Network};
+
+					% Concat 2
+					\node[box, fill=orange!30, below=2cm of concat] (concat2) {Concatenation};
+
+					% Output
+					\node[box, fill=gold!50, below=0.8cm of concat2] (out) {Output Layer (Sigmoid)};
+
+					% Arrows
+					\draw[arrow] (cat) -- (embed);
+					\draw[arrow] (embed) |- (concat);
+					\draw[arrow] (cont) |- (concat);
+
+					\draw[arrow] (concat) -| (cross);
+					\draw[arrow] (concat) -| (deep);
+
+					\draw[arrow] (cross) |- (concat2);
+					\draw[arrow] (deep) |- (concat2);
+
+					\draw[arrow] (concat2) -- (out);
+				\end{tikzpicture}
+			}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\textbf{Multi-Task Learning Results}
+
+			\vspace{0.3cm}
+			\resizebox{\linewidth}{!}{%
+				\begin{tabular}{lccccc}
+					\toprule
+					\textbf{Task} & \textbf{Acc} & \textbf{Prec} & \textbf{Rec} & \textbf{F1} & \textbf{AUC} \\
+					\midrule
+					Income        & 0.783        & 0.852         & 0.544        & 0.664       & 0.767        \\
+					Accum.        & 0.795        & 0.846         & 0.708        & 0.771       & 0.852        \\
+					\bottomrule
+				\end{tabular}%
+			}
+
+			\vspace{0.6cm}
+			\textbf{Architecture Highlights}
+			\begin{itemize}
+				\item \textbf{Cross Network}: Applies explicit bounded-degree feature crossing efficiently.
+				\item \textbf{Deep Network}: Learns implicit non-linear higher-order interactions.
+				\item \textbf{Joint Training}: Both networks share the same concatenated input embeddings, optimising for dual investment targets.
+			\end{itemize}
+		\end{column}
+	\end{columns}
 \end{frame}
 
-% =====================================================================
-% SECTION 7: FINAL RESULTS & RECOMMENDATIONS
-% =====================================================================
-\section{Final Results \& Recommendations}
+\section{Recommendations}
 
 \begin{frame}
-	\frametitle{Final Model Performance}
+	\frametitle{Methodology: User-Item Matrix}
+	We construct a user-item interaction matrix $R$ using predicted probabilities from the supervised classifiers, penalised by risk misalignment.
+
+	\begin{block}{Matrix Entry $R_{ij}$}
+		$$
+			R_{ij} = P_{\text{type}(j)}(i) \cdot \big(1 - \alpha \cdot | \text{RiskPropensity}(i) - \text{Risk}(j) |\big)
+		$$
+	\end{block}
+
+	\begin{itemize}
+		\item $P_{\text{type}(j)}(i)$: Predicted probability of client $i$ needing product $j$'s type (Accumulation or Income).
+		\item $\alpha \in [0,1]$: Decay factor penalising risk misalignment.
+		      \begin{itemize}
+			      \item \textbf{Economic Rationale}: Reflects the firm's risk aversion and regulatory suitability constraints (e.g., MiFID II).
+			      \item \textbf{Trade-off}: Balances maximising expected fee revenue/conversion against minimising compliance risks and long-term customer churn from unsuitable investments.
+		      \end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Business Recommendations}
-	We use \cite{sharaf_survey_2022}
+	\frametitle{Methodology: Models \& Evaluation}
+	We use model-based CF \cite{sharaf_survey_2022} leveraging matrix $R$:
+
+	\begin{itemize}
+		\item \textbf{Truncated SVD}: Factorises $R \approx U_k \Sigma_k V_k^T$ into low-dimensional latent factors to capture hidden preferences.
+		\item \textbf{Autoencoder}: Learns non-linear representations by compressing and reconstructing the interaction matrix ($z_u = f_\theta(r_u)$, $\hat{r}_u = g_\phi(z_u)$).
+	\end{itemize}
+
+	\vspace{0.3cm}
+	\textbf{Evaluation Metrics}
+	\begin{itemize}
+		\item \textbf{RMSE}: Measures the model's reconstruction error.
+		\item \textbf{Precision@$k$ \& Recall@$k$}: Evaluate the relevance of the top-$k$ recommendations.
+		\item \textbf{NDCG@$k$}: Assesses ranking quality, prioritising relevant items placed higher.
+	\end{itemize}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Regulatory Compliance (MiFID/IDD)}
+	\frametitle{Experimental Results}
+
+	\begin{table}
+		\centering
+		\resizebox{0.8\textwidth}{!}{%
+			\begin{tabular}{lcccc}
+				\toprule
+				\textbf{Model} & \textbf{RMSE}  & \textbf{Precision@3} & \textbf{Recall@3} & \textbf{NDCG@3} \\
+				\midrule
+				Truncated SVD  & 0.402          & 0.937                & 0.937             & 0.952           \\
+				Autoencoder    & \textbf{0.039} & \textbf{0.984}       & \textbf{0.984}    & \textbf{0.997}  \\
+				\bottomrule
+			\end{tabular}%
+		}
+	\end{table}
+
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figures/svd_tuning.png}\\
+			\small SVD Tuning
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figures/autoencoder_tuning.png}\\
+			\small Autoencoder Tuning
+		\end{column}
+	\end{columns}
 \end{frame}
 
-\begin{frame}
-	\frametitle{Technical Infrastructure}
-\end{frame}
 
 % =====================================================================
 % SECTION 8: CONCLUSION
