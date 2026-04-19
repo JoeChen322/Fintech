@@ -13,7 +13,7 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tikz}
-\usetikzlibrary{shapes, arrows, positioning, calc}
+\usetikzlibrary{shapes, arrows, positioning, calc, fit, backgrounds}
 \usepackage{listings}
 \usepackage{fancyvrb}
 \usepackage[
@@ -126,10 +126,6 @@
 \section{Data Preparation \& Feature Engineering}
 
 \begin{frame}
-	\frametitle{Data Transformation Pipeline}
-\end{frame}
-
-\begin{frame}
 	\frametitle{Feature Transformation: Income \& Wealth}
 \end{frame}
 
@@ -140,10 +136,47 @@
 % =====================================================================
 % SECTION 4: ML PIPELINE ARCHITECTURE
 % =====================================================================
-\section{ML Pipeline \& Hyperparameter Optimization \& Explainable AI (XAI)}
+\section{ML Workflow \& Hyperparameter Optimization \& Explainable AI (XAI)}
 
 \begin{frame}
 	\frametitle{ML Pipeline Overview}
+	\vspace{0.5cm}
+	\begin{center}
+		\resizebox{0.95\textwidth}{!}{
+			\begin{tikzpicture}[
+					node distance=2cm and 1.5cm,
+					box/.style={draw=darkblue, thick, rounded corners=2mm, fill=lightblue!20, minimum width=3.2cm, minimum height=1.2cm, align=center, font=\small},
+					groupbox/.style={draw=darkblue, thick, rounded corners=3mm, inner sep=12pt, dashed},
+					arrow/.style={-latex, thick, darkblue, line width=1.2pt}
+				]
+
+				% 1. Pipeline
+				\node[box] (transform) {\textbf{Data Transform}\\Imputation, Scaling,\\Encoding};
+				\node[box, right=1cm of transform] (fe) {\textbf{Feature Eng.}\\Ratios, Interactions,\\Life-stage Bins};
+				\node[groupbox, fit=(transform) (fe)] (pipeline) {};
+				\node[fill=darkblue, text=white, font=\bfseries, rounded corners=1mm, inner sep=3pt] at (pipeline.north) {1. Scikit-Learn ML Pipeline};
+				\draw[arrow] (transform) -- (fe);
+
+				% 2. Cross Validation
+				\node[box, right=2cm of pipeline, fill=lightcoral!30, minimum height=1.5cm] (cv) {\textbf{2. Cross-Validation}\\Stratified $K$-Fold\\Model Training};
+
+				% 3. Hyperparameter Selection
+				\node[box, above=1.5cm of cv, fill=gold!30, minimum width=4cm] (tuning) {\textbf{3. Hyperparameter Selection}\\Bayesian Opt. (Optuna)};
+
+				% 4. Evaluation
+				\node[box, right=2cm of cv, fill=darkgreen!20, minimum height=1.5cm] (eval) {\textbf{4. Evaluation Metrics}\\Accuracy, Precision,\\Recall, F1, ROC-AUC};
+
+				% Arrows
+				\draw[arrow] (pipeline) -- (cv) node[midway, above, font=\footnotesize, align=center] {Processed\\Features};
+				\draw[arrow] (cv) -- (eval) node[midway, above, font=\footnotesize, align=center] {Validation\\Predictions};
+
+				% Feedback Loop
+				\draw[arrow, dashed] (eval.north) |- (tuning.east) node[pos=0.25, right, font=\footnotesize, align=left] {Optimize\\Target Metric};
+				\draw[arrow, dashed] (tuning.south) -- (cv.north) node[midway, right, font=\footnotesize, align=left] {Best\\Params};
+
+			\end{tikzpicture}
+		}
+	\end{center}
 \end{frame}
 
 \begin{frame}
