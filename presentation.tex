@@ -43,6 +43,7 @@
 \author{Peng Rao, Maxime d'Aviau de Ternay, Qiao Zhaochen, Shourya Vashistha, Arnau Nomen}
 \date{\today}
 \setbeamertemplate{footline}{}
+\setbeamertemplate{navigation symbols}{}
 
 % Frame style customization
 \setbeamertemplate{frametitle}[default][center]
@@ -69,43 +70,33 @@
 % =====================================================================
 % TABLE OF CONTENTS
 % =====================================================================
-\begin{frame}[fragile]
+\begin{frame}[t]
 	\frametitle{Table of Contents}
-	\tableofcontents[hideallsubsections]
-\end{frame}
+	\begin{columns}[T,onlytextwidth]
+		\begin{column}[t]{0.42\textwidth}
+			\textbf{Presentation Roadmap}
+			\vspace{0.15cm}
+			{\scriptsize \tableofcontents[hideallsubsections]}
+		\end{column}
+		\begin{column}[t]{0.58\textwidth}
+			\raggedright\textbf{Project Flow}\par
+			\vspace{0.05cm}
+			\begin{center}
+				\begin{tikzpicture}[
+						node distance=1.05cm,
+						box/.style={draw=darkblue, thick, fill=lightblue!20, text width=6.2cm, minimum height=1.0cm, align=center, rounded corners=2mm, font=\small},
+						arrow/.style={-latex, thick, darkblue, line width=1.1pt}
+					]
+					\node[box] (eda) {\textbf{1. Exploratory Data Analysis}\\ \scriptsize Data quality, distributions, outliers};
+					\node[box, below=of eda] (ml) {\textbf{2. Classification \& Model Selection}\\ \scriptsize Baselines, tuning, explainability, DCN comparison};
+					\node[box, below=of ml] (rec) {\textbf{3. Recommendation Engine}\\ \scriptsize SVD/Autoencoder ranking and product matching};
 
-% =====================================================================
-% SECTION 1: PROJECT OVERVIEW
-% =====================================================================
-\section{Project Overview}
-
-\begin{frame}
-	\frametitle{Project Overview}
-
-	\resizebox{0.95\textwidth}{!}{
-		\begin{tikzpicture}[
-				box/.style={draw=darkblue, thick, fill=lightblue!20, minimum width=3.8cm, minimum height=1.5cm, align=center, rounded corners=2mm},
-				arrow/.style={-latex, thick, darkblue, line width=1.5pt}
-			]
-
-			% Nodes
-			\node[box] (eda) {\textbf{1. Data \& EDA}\\ Cleaning, Outliers,\\ Transformations};
-
-			\node[box, right=2cm of eda] (ml) {\textbf{2. Classification}\\ ML Baselines \& DCN\\ Needs Prediction};
-
-			\node[box, right=2cm of ml] (rec) {\textbf{3. Recommendation}\\ SVD \& Autoencoder\\ Product Matching};
-
-			% Arrows
-			\draw[arrow] (eda) -- (ml);
-			\draw[arrow] (ml) -- (rec) node[midway, above, font=\footnotesize] {Confidence Scores};
-
-			% Labels
-			\node[below=0.4cm of eda, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {EDA.ipynb};
-			\node[below=0.4cm of ml, text width=4.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {classification\_ml\_models.ipynb\\classification-dl-models.ipynb};
-			\node[below=0.4cm of rec, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {recommend-system.ipynb};
-
-		\end{tikzpicture}
-	}
+					\draw[arrow] (eda) -- (ml);
+					\draw[arrow] (ml) -- (rec);
+				\end{tikzpicture}
+			\end{center}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 % =====================================================================
@@ -117,17 +108,26 @@
 % --- Slide: Target Variable Analysis ---
 \begin{frame}
 	\frametitle{Target Variable Analysis}
-	\begin{columns}[T]
-		\begin{column}{0.42\textwidth}
-			\begin{itemize}\setlength\itemsep{6pt}
-				\item \texttt{AccumulationInvestment}: \textbf{balanced} --- prevalence $51.3\%$
-				\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} --- prevalence $38.4\%$
-				\item $\chi^2$ test: $p = 0.44 \gg 0.05$ So here, we consider that targets are \textbf{statistically independent}
-			\end{itemize}
+	\begin{columns}[c] % Changed [T] to [c] for vertical centering
+		\begin{column}{0.45\textwidth} % Slightly increased width
+			\begin{block}{Key Findings}
+				\small
+				\begin{itemize}\setlength\itemsep{3pt}
+					\item \texttt{AccumulationInvestment}: \textbf{balanced} ($51.3\%$, $\approx 1{:}1$)
+					\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} ($38.4\%$, $\approx 2.3{:}1$)
+					\item $\chi^2$ test: $p = 0.44 \gg 0.05$ $\Rightarrow$ targets are independent.
+				\end{itemize}
+			\end{block}
+			\begin{alertblock}{Modeling Implication}
+				\footnotesize Naive all-zero baseline gives $\sim 70\%$ accuracy, so accuracy alone is misleading. We optimize \textbf{F$_{0.5}$} and model the two targets as multi-label/multi-task outputs.
+			\end{alertblock}
 		\end{column}
-		\begin{column}{0.55\textwidth}
+
+		\begin{column}{0.52\textwidth} % Adjusted width
 			\centering
-			\includegraphics[width=\linewidth]{Anlyse_target_variables.png}
+			\includegraphics[width=\linewidth]{Anlyse_target_variables.png}\\
+			\vspace{0.2cm} % Added a little spacing between image and caption
+			\footnotesize Target prevalence and cross-tab evidence
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -256,48 +256,6 @@
 
 	\end{columns}
 \end{frame}
-% --- Slide: Target Variable Analysis ---
-\begin{frame}
-	\frametitle{Target Variable Analysis}
-	\begin{columns}[T]
-		\begin{column}{0.50\textwidth}
-			\textbf{Class imbalance}
-			\begin{itemize}
-				\item \texttt{AccumulationInvestment}:\\
-				      Perfectly balanced — prevalence $\approx \mathbf{50\%}$\\
-				      Imbalance ratio: $\approx 1:1$
-				\item \texttt{IncomeInvestment}:\\
-				      Moderate imbalance — prevalence $\approx \mathbf{30\%}$\\
-				      Imbalance ratio: $\approx 2.3:1$\\
-				      {\scriptsize A naive all-zero classifier $\Rightarrow$ 70\% accuracy!}
-			\end{itemize}
-			\vspace{6pt}
-			\textbf{Conclusion:} accuracy is an unreliable metric. \\
-			$\Rightarrow$ Optimise \textbf{F$_{0.5}$ Score} in modelling phase.
-		\end{column}
-		\begin{column}{0.46\textwidth}
-			\textbf{Target independence ($\chi^2$ test)}
-			\begin{itemize}
-				\item Cross-tabulation: \texttt{IncomeInv.} $\times$ \texttt{AccumInv.}
-				\item Result: $p \gg 0.05$\\
-				      $\Rightarrow$ \textbf{fail to reject} $H_0$ of independence
-				\item \textbf{Targets are statistically independent}
-			\end{itemize}
-			\vspace{6pt}
-			\begin{tikzpicture}
-				\node[draw=darkblue, fill=lightblue!10, rounded corners=2mm,
-					text width=4.8cm, align=left, inner sep=6pt, font=\scriptsize] {
-					\textbf{Modelling implication}\\[3pt]
-					Independence of targets validates a\\
-					\textbf{multi-label / multi-task} approach:\\
-					each output head can be trained\\
-					with its own loss independently.
-				};
-			\end{tikzpicture}
-		\end{column}
-	\end{columns}
-\end{frame}
-
 % --- Slide: Outlier Detection ---
 \begin{frame}
 	\frametitle{Outlier Detection — Isolation Forest}
@@ -517,7 +475,7 @@
 
 	\vspace{0.3cm}
 	\begin{block}{Final Selection}
-		\textbf{Tuned LightGBM} was selected as the final model for generating probabilities to feed into the recommendation engine, ensuring highly precise product targeting.
+		For the final recommendation pipeline, we use \textbf{Tuned RF} for \textbf{Income Investment} and \textbf{Tuned LightGBM} for \textbf{Accumulation Investment}, balancing precision and task-specific predictive strength.
 	\end{block}
 \end{frame}
 
@@ -534,33 +492,23 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{Income Investment Model Insights (LightGBM)}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
+	\frametitle{LightGBM Model Insights: Income vs Accumulation}
+	\begin{columns}[T]
+		\begin{column}{0.4\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/extracted_img_4.png}\\
-			\small SHAP Feature Importance
+			\scriptsize Income Investment\\[0.05cm]
+			\includegraphics[width=0.95\linewidth]{figures/extracted_img_4.png}\\
+			\scriptsize SHAP Feature Importance\\[0.05cm]
+			\includegraphics[width=0.7\linewidth]{figures/extracted_img_5.png}\\
+			\scriptsize SHAP Beeswarm Plot
 		\end{column}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.4\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{figures/extracted_img_5.png}\\
-			\small SHAP Beeswarm Plot
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Accumulation Investment Model Insights (LightGBM)}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{figures/extracted_img_6.png}\\
-			\small SHAP Feature Importance
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{figures/extracted_img_7.png}\\
-			\small SHAP Beeswarm Plot
+			\scriptsize Accumulation Investment\\[0.05cm]
+			\includegraphics[width=0.95\linewidth]{figures/extracted_img_6.png}\\
+			\scriptsize SHAP Feature Importance\\[0.05cm]
+			\includegraphics[width=0.7\linewidth]{figures/extracted_img_7.png}\\
+			\scriptsize SHAP Beeswarm Plot
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -568,16 +516,16 @@
 \begin{frame}
 	\frametitle{LIME: Local Interpretability Example}
 	\centering
-	\includegraphics[width=0.7\textwidth,height=0.65\textheight,keepaspectratio]{figures/extracted_img_13.png}\\
+	\includegraphics[width=0.9\textwidth,height=0.75\textheight,keepaspectratio]{figures/extracted_img_13.png}\\
 	\small \textit{Example LIME Explanation for a single client prediction (LightGBM Income Model)}
 \end{frame}
 
 \section{Deep Learning Approach}
 
 \begin{frame}
-	\frametitle{Deep Learning Model Architecture: DCN \cite{guo_explainable_2023}}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
+	\frametitle{DCN Overview and Selection Decision \cite{guo_explainable_2023}}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
 			\centering
 			\resizebox{\linewidth}{!}{
 				\begin{tikzpicture}[
@@ -585,45 +533,29 @@
 						arrow/.style={-latex, thick}
 					]
 
-					% Inputs
 					\node[box, fill=lightblue] (cat) {Categorical Features};
 					\node[box, fill=lightblue, right=0.5cm of cat] (cont) {Continuous Features};
-
-					% Embedding
 					\node[box, fill=lightcyan, below=0.6cm of cat] (embed) {Embedding Layer};
-
-					% Concat
 					\node[box, fill=orange!30, below=1.8cm of cat, xshift=1.6cm] (concat) {Concatenation ($x_0$)};
-
-					% Two paths
 					\node[box, fill=lightcoral!50, below=0.8cm of concat, xshift=-1.6cm] (cross) {Cross Network};
 					\node[box, fill=darkgreen!30, below=0.8cm of concat, xshift=1.6cm] (deep) {Deep Network};
-
-					% Concat 2
 					\node[box, fill=orange!30, below=2cm of concat] (concat2) {Concatenation};
-
-					% Output
 					\node[box, fill=gold!50, below=0.8cm of concat2] (out) {Output Layer (Sigmoid)};
 
-					% Arrows
 					\draw[arrow] (cat) -- (embed);
 					\draw[arrow] (embed) |- (concat);
 					\draw[arrow] (cont) |- (concat);
-
 					\draw[arrow] (concat) -| (cross);
 					\draw[arrow] (concat) -| (deep);
-
 					\draw[arrow] (cross) |- (concat2);
 					\draw[arrow] (deep) |- (concat2);
-
 					\draw[arrow] (concat2) -- (out);
 				\end{tikzpicture}
 			}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			\textbf{Multi-Task Learning Results}
-
-			\vspace{0.3cm}
+		\begin{column}{0.52\textwidth}
+			\textbf{DCN Results (Multi-Task)}
+			\vspace{0.2cm}
 			\resizebox{\linewidth}{!}{%
 				\begin{tabular}{lccccc}
 					\toprule
@@ -635,13 +567,14 @@
 				\end{tabular}%
 			}
 
-			\vspace{0.6cm}
-			\textbf{Architecture Highlights}
-			\begin{itemize}
-				\item \textbf{Cross Network}: Applies explicit bounded-degree feature crossing efficiently.
-				\item \textbf{Deep Network}: Learns implicit non-linear higher-order interactions.
-				\item \textbf{Joint Training}: Both networks share the same concatenated input embeddings, optimising for dual investment targets.
-			\end{itemize}
+			\vspace{0.25cm}
+			\begin{block}{Why Not Selected}
+				\begin{itemize}
+					\item Slight gain for \textbf{Income} vs tuned RF.
+					\item Lower performance for \textbf{Accumulation} vs tuned LightGBM.
+					\item Lower interpretability than tree-based models with SHAP/LIME.
+				\end{itemize}
+			\end{block}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -691,7 +624,8 @@
 
 	\begin{table}
 		\centering
-		\resizebox{0.8\textwidth}{!}{%
+		\scriptsize
+		\resizebox{0.5\textwidth}{!}{%
 			\begin{tabular}{lcccc}
 				\toprule
 				\textbf{Model} & \textbf{RMSE}  & \textbf{Precision@3} & \textbf{Recall@3} & \textbf{NDCG@3} \\
@@ -704,34 +638,22 @@
 	\end{table}
 
 	\begin{columns}
-		\begin{column}{0.5\textwidth}
+		\begin{column}{0.45\textwidth}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figures/svd_tuning.png}\\
+			\includegraphics[width=0.68\linewidth]{figures/svd_tuning.png}\\
 			\small SVD Tuning
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figures/autoencoder_tuning.png}\\
+			\includegraphics[width=0.68\linewidth]{figures/autoencoder_tuning.png}\\
 			\small Autoencoder Tuning
 		\end{column}
 	\end{columns}
-\end{frame}
 
-
-% =====================================================================
-% SECTION 8: CONCLUSION
-% =====================================================================
-\section{Conclusion}
-
-\begin{frame}
-	\frametitle{Project Summary}
-	\begin{itemize}
-		\item \textbf{Comprehensive ML Pipeline:} Integrated extensive feature engineering, missing value imputation, and log-scaling directly into a robust scikit-learn pipeline to handle skewed financial metrics.
-		\item \textbf{Targeted Model Selection:} Selected and optimized LightGBM for the F0.5 score, successfully prioritizing precise, risk-appropriate recommendations over raw recall.
-		\item \textbf{Deep Learning Insights:} Leveraged a Deep \& Cross Network (DCN) to learn explicit feature combinations jointly across two prediction tasks.
-		\item \textbf{Personalized Recommendations:} Built an Autoencoder-based Collaborative Filtering system that significantly outperforms SVD while enforcing business-driven risk misalignment penalties.
-		\item \textbf{Interpretability First:} Embedded global (SHAP) and local (LIME) interpretability, ensuring that every algorithmic recommendation is explainable to financial advisors and regulatory bodies.
-	\end{itemize}
+	\vspace{0.2cm}
+	\begin{block}{Financial Perspective}
+		\footnotesize The Autoencoder's superior ranking quality (higher Precision@3/Recall@3/NDCG@3) supports better product-client matching, which can improve conversion and fee revenue while reducing suitability risk and long-term churn from mis-sold recommendations.
+	\end{block}
 \end{frame}
 
 \begin{frame}
