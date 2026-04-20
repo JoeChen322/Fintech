@@ -138,8 +138,8 @@
 % SECTION 2: EXPLORATORY DATA ANALYSIS
 % =====================================================================
 \section{Exploratory Data Analysis}
- 
- 
+
+
 % --- Slide: Target Variable Analysis ---
 \begin{frame}
 	\frametitle{Target Variable Analysis}
@@ -149,7 +149,7 @@
 				\item \texttt{AccumulationInvestment}: \textbf{balanced} --- prevalence $51.3\%$
 				\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} --- prevalence $38.4\%$
 				\item $\chi^2$ test: $p = 0.44 \gg 0.05$ So here, we consider that targets are \textbf{statistically independent}
-				\end{itemize}
+			\end{itemize}
 		\end{column}
 		\begin{column}{0.55\textwidth}
 			\centering
@@ -157,14 +157,14 @@
 		\end{column}
 	\end{columns}
 \end{frame}
- 
+
 % --- Slide: Outlier Overview --- t-SNE ---
 \begin{frame}
 	\frametitle{Outlier Detection --- Global View (t-SNE)}
 	\begin{columns}[T]
 		\begin{column}{0.38\textwidth}
 			\begin{itemize}\setlength\itemsep{6pt}
-				\item \textbf{Isolation Forest} --- Isolation Forest was applied using 300 trees, with the anomaly threshold set at the 5th percentile, resulting in approximately 5\% of the most atypical observations being flagged as outliers. 
+				\item \textbf{Isolation Forest} --- Isolation Forest was applied using 300 trees, with the anomaly threshold set at the 5th percentile, resulting in approximately 5\% of the most atypical observations being flagged as outliers.
 				\item[$\Rightarrow$] Outliers are \textbf{structurally different profiles}, not corrupt records
 			\end{itemize}
 		\end{column}
@@ -192,7 +192,7 @@
 		\end{column}
 	\end{columns}
 \end{frame}
- 
+
 % --- Slide: Outlier Scatter --- RiskPropensity vs FinancialEducation ---
 \begin{frame}
 	\frametitle{Outlier Analysis --- Behavioural Features}
@@ -235,11 +235,11 @@
 	\frametitle{Feature Distributions by Target}
 	\begin{columns}[T]
 		\begin{column}{0.33\textwidth}
-\begin{itemize}\setlength\itemsep{4pt}
-    \item \texttt{Age}, \texttt{Income}, \texttt{Wealth}, \texttt{RiskPropensity}: distributions are \textbf{significantly higher for class~1}, indicating that these variables strongly discriminate between the two groups
-    \item \texttt{FinancialEducation}: \textbf{moderate upward shift} for class~1, suggesting a secondary but positive effect
-    \item \texttt{FamilyMembers}: \textbf{no visible difference} 
-\end{itemize}
+			\begin{itemize}\setlength\itemsep{4pt}
+				\item \texttt{Age}, \texttt{Income}, \texttt{Wealth}, \texttt{RiskPropensity}: distributions are \textbf{significantly higher for class~1}, indicating that these variables strongly discriminate between the two groups
+				\item \texttt{FinancialEducation}: \textbf{moderate upward shift} for class~1, suggesting a secondary but positive effect
+				\item \texttt{FamilyMembers}: \textbf{no visible difference}
+			\end{itemize}
 		\end{column}
 		\begin{column}{0.64\textwidth}
 			\centering
@@ -247,41 +247,41 @@
 		\end{column}
 	\end{columns}
 \end{frame}
- 
+
 % --- Slide: Gender Target Interaction ---
 \begin{frame}
-    \frametitle{Need Prevalence by Gender}
-    \begin{columns}[T]
-        
-        \begin{column}{0.33\textwidth}
-            \begin{itemize}\setlength\itemsep{5pt}
-                
-                \item \texttt{IncomeInvestment}:
-                \begin{itemize}\setlength\itemsep{2pt}
-                    \item Male $\approx 39\%$
-                    \item Female $\approx 38\%$
-                \end{itemize}
-                
-                \item \texttt{AccumulationInvestment}:
-                \begin{itemize}\setlength\itemsep{2pt}
-                    \item Male $\approx 52\%$
-                    \item Female $\approx 51\%$
-                \end{itemize}
-                
-                \item Differences are \textbf{negligible}
-                
-                \item[$\Rightarrow$] \texttt{Gender} has \textbf{low discriminative power}
-                
-            \end{itemize}
-        \end{column}
-        
-        \begin{column}{0.64\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{gender_target_interaction.png}
-        \end{column}
-        
-    \end{columns}
-\end{frame} 
+	\frametitle{Need Prevalence by Gender}
+	\begin{columns}[T]
+
+		\begin{column}{0.33\textwidth}
+			\begin{itemize}\setlength\itemsep{5pt}
+
+				\item \texttt{IncomeInvestment}:
+				      \begin{itemize}\setlength\itemsep{2pt}
+					      \item Male $\approx 39\%$
+					      \item Female $\approx 38\%$
+				      \end{itemize}
+
+				\item \texttt{AccumulationInvestment}:
+				      \begin{itemize}\setlength\itemsep{2pt}
+					      \item Male $\approx 52\%$
+					      \item Female $\approx 51\%$
+				      \end{itemize}
+
+				\item Differences are \textbf{negligible}
+
+				\item[$\Rightarrow$] \texttt{Gender} has \textbf{low discriminative power}
+
+			\end{itemize}
+		\end{column}
+
+		\begin{column}{0.64\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{gender_target_interaction.png}
+		\end{column}
+
+	\end{columns}
+\end{frame}
 % --- Slide: Target Variable Analysis ---
 \begin{frame}
 	\frametitle{Target Variable Analysis}
@@ -528,14 +528,14 @@
 		\resizebox{0.85\textwidth}{!}{
 			\begin{tabular}{l|ccc|ccc}
 				\toprule
-				                    & \multicolumn{3}{c|}{\textbf{Income Target}} & \multicolumn{3}{c}{\textbf{Accumulation Target}}                                                                                    \\
-				\textbf{Model}      & \textbf{Precision}                          & \textbf{Recall}                                  & \textbf{F0.5 Score} & \textbf{Precision} & \textbf{Recall} & \textbf{F0.5 Score} \\
+				                    & \multicolumn{3}{c|}{\textbf{Income Target}} & \multicolumn{3}{c}{\textbf{Accumulation Target}}                                                                                \\
+				\textbf{Model}      & \textbf{Precision}                          & \textbf{Recall}                                  & \textbf{F1 Score} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 Score} \\
 				\midrule
-				Baseline RF         & 0.724                                       & 0.450                                            & 0.648               & 0.763              & 0.630           & 0.733               \\
-				\textbf{Tuned RF}   & \textbf{0.785}                              & 0.412                                            & 0.669               & \textbf{0.801}     & 0.582           & 0.745               \\
+				Baseline RF         & 0.7953                                      & 0.5260                                           & 0.6332            & 0.8301             & 0.7622          & 0.7947            \\
+				\textbf{Tuned RF}   & \textbf{0.8361}                             & 0.5312                                           & 0.6497            & \textbf{0.8581}    & 0.7544          & 0.8029            \\
 				\midrule
-				Baseline LGBM       & 0.760                                       & 0.521                                            & 0.696               & 0.812              & 0.685           & 0.783               \\
-				\textbf{Tuned LGBM} & \textbf{0.802}                              & 0.505                                            & \textbf{0.720}      & \textbf{0.845}     & 0.671           & \textbf{0.803}      \\
+				Baseline LGBM       & 0.8402                                      & 0.5339                                           & \textbf{0.6529}   & 0.8503             & 0.7641          & 0.8049            \\
+				\textbf{Tuned LGBM} & \textbf{0.8909}                             & 0.5104                                           & 0.6490            & \textbf{0.8568}    & \textbf{0.7700} & \textbf{0.8111}   \\
 				\bottomrule
 			\end{tabular}
 		}
