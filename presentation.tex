@@ -114,12 +114,12 @@
 				\small
 				\begin{itemize}\setlength\itemsep{3pt}
 					\item \texttt{AccumulationInvestment}: \textbf{balanced} ($51.3\%$, $\approx 1{:}1$)
-					\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} ($38.4\%$, $\approx 2.3{:}1$)
+					\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} ($38.4\%$, $\approx 1.6{:}1$)
 					\item $\chi^2$ test: $p = 0.44 \gg 0.05$ $\Rightarrow$ targets are independent.
 				\end{itemize}
 			\end{block}
 			\begin{alertblock}{Modeling Implication}
-				\footnotesize Naive all-zero baseline gives $\sim 70\%$ accuracy, so accuracy alone is misleading. We optimize \textbf{F$_{0.5}$} and model the two targets as outputs.
+				\footnotesize Naive all-zero baseline gives $\sim 62\%$ accuracy, so accuracy alone is misleading. We optimize \textbf{F$_{0.5}$} and model the two targets as outputs.
 			\end{alertblock}
 		\end{column}
 
@@ -491,7 +491,7 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{LightGBM Model Insights: Income vs Accumulation}
+	\frametitle{Model Insights: Income (RF) vs Accumulation (LGBM)}
 	\begin{columns}[T]
 		\begin{column}{0.4\textwidth}
 			\centering
@@ -580,7 +580,7 @@
 					\item Slight gain for \textbf{Income} vs tuned RF for F1, but not for precision.
 					\item Lower performance for \textbf{Accumulation} vs tuned LightGBM.
 					\item Lower interpretability than tree-based models with SHAP/LIME.
-				\end{itemize}
+				\end{itemize} 
 			\end{block}
 		\end{column}
 	\end{columns}
@@ -632,13 +632,14 @@
 	\begin{table}
 		\centering
 		\scriptsize
-		\resizebox{0.5\textwidth}{!}{%
+		\caption*{\footnotesize Holdout validation results (production models: SVD $n{=}6$, AE $\text{dim}{=}8$)}
+		\resizebox{0.55\textwidth}{!}{%
 			\begin{tabular}{lcccc}
 				\toprule
 				\textbf{Model} & \textbf{RMSE}  & \textbf{Precision@3} & \textbf{Recall@3} & \textbf{NDCG@3} \\
 				\midrule
-				Truncated SVD  & 0.396          & 0.955                & 0.955             & 0.988           \\
-				Autoencoder    & \textbf{0.206} & \textbf{0.964}       & \textbf{0.964}    & \textbf{0.993}  \\
+				Truncated SVD  & 0.664          & 0.930                & 0.930             & 0.977           \\
+				Autoencoder    & \textbf{0.016} & \textbf{0.994}       & \textbf{0.994}    & \textbf{0.999}  \\
 				\bottomrule
 			\end{tabular}%
 		}
