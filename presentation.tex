@@ -133,76 +133,76 @@
 \end{frame}
 
 % --- Slide: Outlier Overview --- t-SNE ---
-\begin{frame}
-	\frametitle{Outlier Detection --- Global View (t-SNE)}
-	\begin{columns}[T]
-		\begin{column}{0.38\textwidth}
-			\begin{itemize}\setlength\itemsep{6pt}
-				\item \textbf{Isolation Forest} --- Isolation Forest was applied using 300 trees, with the anomaly threshold set at the 5th percentile, resulting in approximately 5\% of the most atypical observations being flagged as outliers.
-				\item[$\Rightarrow$] Outliers are \textbf{structurally different profiles}, not corrupt records
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.59\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{tsne_outliers.png}
-		\end{column}
-	\end{columns}
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Outlier Detection --- Global View (t-SNE)}
+% 	\begin{columns}[T]
+% 		\begin{column}{0.38\textwidth}
+% 			\begin{itemize}\setlength\itemsep{6pt}
+% 				\item \textbf{Isolation Forest} --- Isolation Forest was applied using 300 trees, with the anomaly threshold set at the 5th percentile, resulting in approximately 5\% of the most atypical observations being flagged as outliers.
+% 				\item[$\Rightarrow$] Outliers are \textbf{structurally different profiles}, not corrupt records
+% 			\end{itemize}
+% 		\end{column}
+% 		\begin{column}{0.59\textwidth}
+% 			\centering
+% 			\includegraphics[width=\linewidth]{tsne_outliers.png}
+% 		\end{column}
+% 	\end{columns}
+% \end{frame}
 
 % --- Slide: Outlier Scatter --- Age vs Income ---
-\begin{frame}
-	\frametitle{Outlier Analysis --- Age vs Income}
-	\begin{columns}[T]
-		\begin{column}{0.38\textwidth}
-			\begin{itemize}\setlength\itemsep{6pt}
-				\item Outliers concentrated at \textbf{very high income}, across all age groups
-				\item Young high-earners ($< 35$) and older wealthy clients ($> 70$) are both flagged
-				\item[$\Rightarrow$] Pattern is \textbf{economically coherent}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.59\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{outliers_Age_Income.png}
-		\end{column}
-	\end{columns}
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Outlier Analysis --- Age vs Income}
+% 	\begin{columns}[T]
+% 		\begin{column}{0.38\textwidth}
+% 			\begin{itemize}\setlength\itemsep{6pt}
+% 				\item Outliers concentrated at \textbf{very high income}, across all age groups
+% 				\item Young high-earners ($< 35$) and older wealthy clients ($> 70$) are both flagged
+% 				\item[$\Rightarrow$] Pattern is \textbf{economically coherent}
+% 			\end{itemize}
+% 		\end{column}
+% 		\begin{column}{0.59\textwidth}
+% 			\centering
+% 			\includegraphics[width=\linewidth]{outliers_Age_Income.png}
+% 		\end{column}
+% 	\end{columns}
+% \end{frame}
 
 % --- Slide: Outlier Scatter --- RiskPropensity vs FinancialEducation ---
-\begin{frame}
-	\frametitle{Outlier Analysis --- Behavioural Features}
-	\begin{columns}[T]
-		\begin{column}{0.38\textwidth}
-			\begin{itemize}\setlength\itemsep{6pt}
-				\item Outliers are \textbf{spread throughout} the behavioural feature space
-				\item No boundary separates outliers from normal points
-				\item[$\Rightarrow$] Outliers are driven by \textbf{financial variables}, not by \texttt{RiskPropensity} or \texttt{FinancialEducation}
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.59\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{outliers_RiskPropensity_FinancialEducation.png}
-		\end{column}
-	\end{columns}
-\end{frame}
+% \begin{frame}
+% 	\frametitle{Outlier Analysis --- Behavioural Features}
+% 	\begin{columns}[T]
+% 		\begin{column}{0.38\textwidth}
+% 			\begin{itemize}\setlength\itemsep{6pt}
+% 				\item Outliers are \textbf{spread throughout} the behavioural feature space
+% 				\item No boundary separates outliers from normal points
+% 				\item[$\Rightarrow$] Outliers are driven by \textbf{financial variables}, not by \texttt{RiskPropensity} or \texttt{FinancialEducation}
+% 			\end{itemize}
+% 		\end{column}
+% 		\begin{column}{0.59\textwidth}
+% 			\centering
+% 			\includegraphics[width=\linewidth]{outliers_RiskPropensity_FinancialEducation.png}
+% 		\end{column}
+% 	\end{columns}
+% \end{frame}
 
-% --- Slide: Outlier Detection --- Box Plots ---
-\begin{frame}
-	\frametitle{Outlier Detection --- Feature by Feature}
-	\begin{columns}[T]
-		\begin{column}{0.38\textwidth}
-			\begin{itemize}\setlength\itemsep{5pt}
-				\item \texttt{Age}, \texttt{FamilyMembers}, \texttt{FinancialEducation}, \texttt{RiskPropensity}: \textbf{few outliers}, all plausible
-				\item \texttt{Income}: \textbf{166 outliers} --- right tail up to $\sim$365
-				\item \texttt{Wealth}: \textbf{317 outliers} --- extreme values up to $\sim$2233
-				\item[$\Rightarrow$] Financial variables dominate variance $\Rightarrow$ \textbf{logarithmic transformation} required
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.59\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{boxplots_outliers.png}
-		\end{column}
-	\end{columns}
-\end{frame}
+% % --- Slide: Outlier Detection --- Box Plots ---
+% \begin{frame}
+% 	\frametitle{Outlier Detection --- Feature by Feature}
+% 	\begin{columns}[T]
+% 		\begin{column}{0.38\textwidth}
+% 			\begin{itemize}\setlength\itemsep{5pt}
+% 				\item \texttt{Age}, \texttt{FamilyMembers}, \texttt{FinancialEducation}, \texttt{RiskPropensity}: \textbf{few outliers}, all plausible
+% 				\item \texttt{Income}: \textbf{166 outliers} --- right tail up to $\sim$365
+% 				\item \texttt{Wealth}: \textbf{317 outliers} --- extreme values up to $\sim$2233
+% 				\item[$\Rightarrow$] Financial variables dominate variance $\Rightarrow$ \textbf{logarithmic transformation} required
+% 			\end{itemize}
+% 		\end{column}
+% 		\begin{column}{0.59\textwidth}
+% 			\centering
+% 			\includegraphics[width=\linewidth]{boxplots_outliers.png}
+% 		\end{column}
+% 	\end{columns}
+% \end{frame}
 
 % --- Slide: Violin Plots by Target ---
 \begin{frame}
@@ -223,39 +223,39 @@
 \end{frame}
 
 % --- Slide: Gender Target Interaction ---
-\begin{frame}
-	\frametitle{Need Prevalence by Gender}
-	\begin{columns}[T]
+% \begin{frame}
+% 	\frametitle{Need Prevalence by Gender}
+% 	\begin{columns}[T]
 
-		\begin{column}{0.33\textwidth}
-			\begin{itemize}\setlength\itemsep{5pt}
+% 		\begin{column}{0.33\textwidth}
+% 			\begin{itemize}\setlength\itemsep{5pt}
 
-				\item \texttt{IncomeInvestment}:
-				      \begin{itemize}\setlength\itemsep{2pt}
-					      \item Male $\approx 39\%$
-					      \item Female $\approx 38\%$
-				      \end{itemize}
+% 				\item \texttt{IncomeInvestment}:
+% 				      \begin{itemize}\setlength\itemsep{2pt}
+% 					      \item Male $\approx 39\%$
+% 					      \item Female $\approx 38\%$
+% 				      \end{itemize}
 
-				\item \texttt{AccumulationInvestment}:
-				      \begin{itemize}\setlength\itemsep{2pt}
-					      \item Male $\approx 52\%$
-					      \item Female $\approx 51\%$
-				      \end{itemize}
+% 				\item \texttt{AccumulationInvestment}:
+% 				      \begin{itemize}\setlength\itemsep{2pt}
+% 					      \item Male $\approx 52\%$
+% 					      \item Female $\approx 51\%$
+% 				      \end{itemize}
 
-				\item Differences are \textbf{negligible}
+% 				\item Differences are \textbf{negligible}
 
-				\item[$\Rightarrow$] \texttt{Gender} has \textbf{low discriminative power}
+% 				\item[$\Rightarrow$] \texttt{Gender} has \textbf{low discriminative power}
 
-			\end{itemize}
-		\end{column}
+% 			\end{itemize}
+% 		\end{column}
 
-		\begin{column}{0.64\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{gender_target_interaction.png}
-		\end{column}
+% 		\begin{column}{0.64\textwidth}
+% 			\centering
+% 			\includegraphics[width=\linewidth]{gender_target_interaction.png}
+% 		\end{column}
 
-	\end{columns}
-\end{frame}
+% 	\end{columns}
+% \end{frame}
 % --- Slide: Outlier Detection ---
 \begin{frame}
 	\frametitle{Outlier Detection — Isolation Forest}
