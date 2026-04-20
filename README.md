@@ -118,7 +118,7 @@ Build a machine learning system that:
   - Simple but effective for certain problems
   - May outperform complex models
 
-- [ ] **Hyperparameter Tuning with AutoML**
+- [x] **Hyperparameter Tuning with AutoML**
   - We gonna use Optuna
 
 ### Advanced Recommender Systems
@@ -135,17 +135,17 @@ Build a machine learning system that:
 
 ### Validation & Documentation
 
-- [ ] **Model Ranking Rules**
+- [x] **Model Ranking Rules**
   - Define primary metric
   - Consider the [MiFID/IDD](https://eur-lex.europa.eu/eli/dir/2014/65/oj/eng)
   - Under the regulatory framework of MiFID and IDD, "consumer protection" and the "suitability principle (selling the right product to the right person)" are absolute red lines
   -
 
-- [ ] **Local Explanations**
+- [x] **Local Explanations**
   - Individual SHAP prediction explanations
   - LIME for local interpretability
 
-- [ ] **Documentation**
+- [x] **Documentation**
   - PowerPoint presentation
   - Code documentation
   - Submission package
