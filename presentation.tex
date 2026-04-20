@@ -108,35 +108,257 @@
 	}
 \end{frame}
 
+% =====================================================================
+% SECTION 1: PROJECT OVERVIEW
+% =====================================================================
+\section{Project Overview}
+\begin{frame}
+	\frametitle{Project Overview}
+	\resizebox{0.95\textwidth}{!}{
+		\begin{tikzpicture}[
+				box/.style={draw=darkblue, thick, fill=lightblue!20, minimum width=3.8cm, minimum height=1.5cm, align=center, rounded corners=2mm},
+				arrow/.style={-latex, thick, darkblue, line width=1.5pt}
+			]
+			% Nodes
+			\node[box] (eda) {\textbf{1. Data \& EDA}\\ Cleaning, Outliers,\\ Transformations};
+			\node[box, right=2cm of eda] (ml) {\textbf{2. Classification}\\ ML Baselines \& DCN\\ Needs Prediction};
+			\node[box, right=2cm of ml] (rec) {\textbf{3. Recommendation}\\ SVD \& Autoencoder\\ Product Matching};
+			% Arrows
+			\draw[arrow] (eda) -- (ml);
+			\draw[arrow] (ml) -- (rec) node[midway, above, font=\footnotesize] {Confidence Scores};
+			% Labels
+			\node[below=0.4cm of eda, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {EDA.ipynb};
+			\node[below=0.4cm of ml, text width=4.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {classification\_ml\_models.ipynb\\classification-dl-models.ipynb};
+			\node[below=0.4cm of rec, text width=3.5cm, align=center, font=\scriptsize\itshape, text=gray!80!black] {recommend-system.ipynb};
+		\end{tikzpicture}
+	}
+\end{frame}
+
+% =====================================================================
+% SECTION 2: EXPLORATORY DATA ANALYSIS
+% =====================================================================
 \section{Exploratory Data Analysis}
-
+ 
+ 
+% --- Slide: Target Variable Analysis ---
 \begin{frame}
-	\frametitle{Data Quality Report}
-	\begin{itemize}
-		\item \textbf{Missing Values \& Cleaning:} The initial dataset was largely complete. Invalid categorical codes (e.g., \texttt{Gender=0}) were mapped to missing and imputed. There were no zero or near-zero variance columns.
-		\item \textbf{Variable Distributions:}
-		      \begin{itemize}
-			      \item \textit{Symmetric/Normal:} \texttt{Age}, \texttt{FinancialEducation}, and \texttt{RiskPropensity} follow near-normal distributions.
-			      \item \textit{Highly Skewed:} Financial variables (\texttt{Wealth}, \texttt{Income}) exhibit extreme right-skewness and heavy tails, reflecting structural economic inequality.
-		      \end{itemize}
-		\item \textbf{Outlier Handling:} Isolation Forest flagged outliers, but extreme financial values are valid business profiles, not errors. Consequently, robust scaling and \textbf{logarithmic transformations} were favored over outright deletion to stabilize variance.
-	\end{itemize}
+	\frametitle{Target Variable Analysis}
+	\begin{columns}[T]
+		\begin{column}{0.42\textwidth}
+			\begin{itemize}\setlength\itemsep{6pt}
+				\item \texttt{AccumulationInvestment}: \textbf{balanced} --- prevalence $51.3\%$
+				\item \texttt{IncomeInvestment}: \textbf{moderate imbalance} --- prevalence $38.4\%$
+				\item $\chi^2$ test: $p = 0.44 \gg 0.05$ So here, we consider that targets are \textbf{statistically independent}
+				\end{itemize}
+		\end{column}
+		\begin{column}{0.55\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{Anlyse_target_variables.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+ 
+% --- Slide: Outlier Overview --- t-SNE ---
+\begin{frame}
+	\frametitle{Outlier Detection --- Global View (t-SNE)}
+	\begin{columns}[T]
+		\begin{column}{0.38\textwidth}
+			\begin{itemize}\setlength\itemsep{6pt}
+				\item \textbf{Isolation Forest} --- Isolation Forest was applied using 300 trees, with the anomaly threshold set at the 5th percentile, resulting in approximately 5\% of the most atypical observations being flagged as outliers. 
+				\item[$\Rightarrow$] Outliers are \textbf{structurally different profiles}, not corrupt records
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.59\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{tsne_outliers.png}
+		\end{column}
+	\end{columns}
 \end{frame}
 
+% --- Slide: Outlier Scatter --- Age vs Income ---
 \begin{frame}
-	\frametitle{Key EDA Findings}
-	\begin{itemize}
-		\item \textbf{Feature Predictive Power:} Violin plots reveal individuals needing investments are older, wealthier, and exhibit higher income and risk propensity. Conversely, \texttt{Gender} and \texttt{FamilyMembers} showed minimal discriminative power.
-		\item \textbf{Target Independence:} A Chi-squared ($\chi^2$) test confirmed that \textit{Income Investment} and \textit{Accumulation Investment} needs are statistically independent, validating a multi-label/multi-task modeling approach.
-		\item \textbf{Target Class Imbalance:}
-		      \begin{itemize}
-			      \item \textit{Accumulation Investment} is perfectly balanced ($\sim$50\% prevalence).
-			      \item \textit{Income Investment} exhibits moderate imbalance ($\sim$30\% prevalence).
-			      \item \textit{Conclusion:} Accuracy is an unreliable metric, justifying the optimization of the \textbf{F0.5 Score} in the modeling phase.
-		      \end{itemize}
-	\end{itemize}
+	\frametitle{Outlier Analysis --- Age vs Income}
+	\begin{columns}[T]
+		\begin{column}{0.38\textwidth}
+			\begin{itemize}\setlength\itemsep{6pt}
+				\item Outliers concentrated at \textbf{very high income}, across all age groups
+				\item Young high-earners ($< 35$) and older wealthy clients ($> 70$) are both flagged
+				\item[$\Rightarrow$] Pattern is \textbf{economically coherent}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.59\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{outliers_Age_Income.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+ 
+% --- Slide: Outlier Scatter --- RiskPropensity vs FinancialEducation ---
+\begin{frame}
+	\frametitle{Outlier Analysis --- Behavioural Features}
+	\begin{columns}[T]
+		\begin{column}{0.38\textwidth}
+			\begin{itemize}\setlength\itemsep{6pt}
+				\item Outliers are \textbf{spread throughout} the behavioural feature space
+				\item No boundary separates outliers from normal points
+				\item[$\Rightarrow$] Outliers are driven by \textbf{financial variables}, not by \texttt{RiskPropensity} or \texttt{FinancialEducation}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.59\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{outliers_RiskPropensity_FinancialEducation.png}
+		\end{column}
+	\end{columns}
 \end{frame}
 
+% --- Slide: Outlier Detection --- Box Plots ---
+\begin{frame}
+	\frametitle{Outlier Detection --- Feature by Feature}
+	\begin{columns}[T]
+		\begin{column}{0.38\textwidth}
+			\begin{itemize}\setlength\itemsep{5pt}
+				\item \texttt{Age}, \texttt{FamilyMembers}, \texttt{FinancialEducation}, \texttt{RiskPropensity}: \textbf{few outliers}, all plausible
+				\item \texttt{Income}: \textbf{166 outliers} --- right tail up to $\sim$365
+				\item \texttt{Wealth}: \textbf{317 outliers} --- extreme values up to $\sim$2233
+				\item[$\Rightarrow$] Financial variables dominate variance $\Rightarrow$ \textbf{logarithmic transformation} required
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.59\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{boxplots_outliers.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+% --- Slide: Violin Plots by Target ---
+\begin{frame}
+	\frametitle{Feature Distributions by Target}
+	\begin{columns}[T]
+		\begin{column}{0.33\textwidth}
+\begin{itemize}\setlength\itemsep{4pt}
+    \item \texttt{Age}, \texttt{Income}, \texttt{Wealth}, \texttt{RiskPropensity}: distributions are \textbf{significantly higher for class~1}, indicating that these variables strongly discriminate between the two groups
+    \item \texttt{FinancialEducation}: \textbf{moderate upward shift} for class~1, suggesting a secondary but positive effect
+    \item \texttt{FamilyMembers}: \textbf{no visible difference} 
+\end{itemize}
+		\end{column}
+		\begin{column}{0.64\textwidth}
+			\centering
+			\includegraphics[width=0.75\linewidth]{violinplots_6x2.png}
+		\end{column}
+	\end{columns}
+\end{frame}
+ 
+% --- Slide: Gender Target Interaction ---
+\begin{frame}
+    \frametitle{Need Prevalence by Gender}
+    \begin{columns}[T]
+        
+        \begin{column}{0.33\textwidth}
+            \begin{itemize}\setlength\itemsep{5pt}
+                
+                \item \texttt{IncomeInvestment}:
+                \begin{itemize}\setlength\itemsep{2pt}
+                    \item Male $\approx 39\%$
+                    \item Female $\approx 38\%$
+                \end{itemize}
+                
+                \item \texttt{AccumulationInvestment}:
+                \begin{itemize}\setlength\itemsep{2pt}
+                    \item Male $\approx 52\%$
+                    \item Female $\approx 51\%$
+                \end{itemize}
+                
+                \item Differences are \textbf{negligible}
+                
+                \item[$\Rightarrow$] \texttt{Gender} has \textbf{low discriminative power}
+                
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.64\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{gender_target_interaction.png}
+        \end{column}
+        
+    \end{columns}
+\end{frame} 
+% --- Slide: Target Variable Analysis ---
+\begin{frame}
+	\frametitle{Target Variable Analysis}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\textbf{Class imbalance}
+			\begin{itemize}
+				\item \texttt{AccumulationInvestment}:\\
+				      Perfectly balanced — prevalence $\approx \mathbf{50\%}$\\
+				      Imbalance ratio: $\approx 1:1$
+				\item \texttt{IncomeInvestment}:\\
+				      Moderate imbalance — prevalence $\approx \mathbf{30\%}$\\
+				      Imbalance ratio: $\approx 2.3:1$\\
+				      {\scriptsize A naive all-zero classifier $\Rightarrow$ 70\% accuracy!}
+			\end{itemize}
+			\vspace{6pt}
+			\textbf{Conclusion:} accuracy is an unreliable metric. \\
+			$\Rightarrow$ Optimise \textbf{F$_{0.5}$ Score} in modelling phase.
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\textbf{Target independence ($\chi^2$ test)}
+			\begin{itemize}
+				\item Cross-tabulation: \texttt{IncomeInv.} $\times$ \texttt{AccumInv.}
+				\item Result: $p \gg 0.05$\\
+				      $\Rightarrow$ \textbf{fail to reject} $H_0$ of independence
+				\item \textbf{Targets are statistically independent}
+			\end{itemize}
+			\vspace{6pt}
+			\begin{tikzpicture}
+				\node[draw=darkblue, fill=lightblue!10, rounded corners=2mm,
+					text width=4.8cm, align=left, inner sep=6pt, font=\scriptsize] {
+					\textbf{Modelling implication}\\[3pt]
+					Independence of targets validates a\\
+					\textbf{multi-label / multi-task} approach:\\
+					each output head can be trained\\
+					with its own loss independently.
+				};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+% --- Slide: Outlier Detection ---
+\begin{frame}
+	\frametitle{Outlier Detection — Isolation Forest}
+	\begin{columns}[T]
+		\begin{column}{0.50\textwidth}
+			\textbf{Method choice}
+			\begin{itemize}
+				\item \textbf{Isolation Forest} (300 estimators, \texttt{random\_state=42})
+				\item Features standardised (StandardScaler) before fitting
+				\item \texttt{Gender} (binary): inclusion does not distort the geometry
+				\item Threshold: \textbf{5th percentile} of anomaly scores\\
+				      $\Rightarrow$ flags $\approx 5\%$ of observations as outliers
+			\end{itemize}
+			\vspace{6pt}
+			\textbf{Decision: outliers retained}
+			\begin{itemize}
+				\item Extreme \texttt{Income} / \texttt{Wealth} values are \textbf{valid} business profiles, not data errors
+				\item Preferred treatment: \textbf{robust scaling} + \textbf{logarithmic transformation}
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\textbf{2D projections (Isolation Forest)}\\[4pt]
+			\begin{tikzpicture}
+				\node[draw=darkblue, fill=lightblue!10, rounded corners=2mm,
+					text width=5.0cm, align=left, inner sep=6pt, font=\scriptsize] {
+					\textbf{Key observations from scatter plots}\\[3pt]
+					\textit{Income vs Wealth:} outliers concentrated at very high values — long right tail confirms extreme inequality.\\[3pt]
+					\textit{Age vs Income / Wealth:} older clients more likely to be flagged — plausible, not errors.\\[3pt]
+					\textit{t-SNE projection:} outliers (red) form a sparse fringe around the main cluster (blue). No clear isolated sub-group.\\[3pt]
+					\textbf{Conclusion:} high-value financial profiles are structurally different, not corrupted data.
+				};
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
 \section{Data Preparation \& Feature Engineering}
 
 \begin{frame}
