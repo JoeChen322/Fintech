@@ -119,13 +119,13 @@
 				\end{itemize}
 			\end{block}
 			\begin{alertblock}{Modeling Implication}
-				\footnotesize Naive all-zero baseline gives $\sim 70\%$ accuracy, so accuracy alone is misleading. We optimize \textbf{F$_{0.5}$} and model the two targets as multi-label/multi-task outputs.
+				\footnotesize Naive all-zero baseline gives $\sim 70\%$ accuracy, so accuracy alone is misleading. We optimize \textbf{F$_{0.5}$} and model the two targets as outputs.
 			\end{alertblock}
 		\end{column}
 
 		\begin{column}{0.52\textwidth} % Adjusted width
 			\centering
-			\includegraphics[width=\linewidth]{Anlyse_target_variables.png}\\
+			\includegraphics[width=\linewidth]{figures/target_distribution_crosstab.png}\\
 			\vspace{0.2cm} % Added a little spacing between image and caption
 			\footnotesize Target prevalence and cross-tab evidence
 		\end{column}
@@ -217,7 +217,7 @@
 		\end{column}
 		\begin{column}{0.64\textwidth}
 			\centering
-			\includegraphics[width=0.75\linewidth]{violinplots_6x2.png}
+			\includegraphics[width=0.75\linewidth]{figures/violinplots_by_target.png}
 		\end{column}
 	\end{columns}
 \end{frame}
@@ -451,7 +451,6 @@
 \begin{frame}
 	\frametitle{Optimization Results}
 	\begin{itemize}
-		\item LightGBM consistently outperformed Random Forest across both prediction targets.
 		\item The tuned models demonstrated a significant reduction in false positives while maintaining competitive accuracy.
 	\end{itemize}
 
@@ -473,7 +472,7 @@
 		}
 	\end{table}
 
-	\vspace{0.3cm}
+	\vspace{0.2cm}
 	\begin{block}{Final Selection}
 		For the final recommendation pipeline, we use \textbf{Tuned RF} for \textbf{Income Investment} and \textbf{Tuned LightGBM} for \textbf{Accumulation Investment}, balancing precision and task-specific predictive strength.
 	\end{block}
@@ -514,10 +513,18 @@
 \end{frame}
 
 \begin{frame}
-	\frametitle{LIME: Local Interpretability Example}
-	\centering
-	\includegraphics[width=0.9\textwidth,height=0.75\textheight,keepaspectratio]{figures/extracted_img_13.png}\\
-	\small \textit{Example LIME Explanation for a single client prediction (LightGBM Income Model)}
+	\frametitle{LIME, PDP and ICE for RF income investment}
+	\begin{columns}[T,onlytextwidth]
+		\begin{column}{0.49\textwidth}
+			\centering
+			\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{figures/extracted_img_15.png}\\
+		\end{column}
+		\begin{column}{0.49\textwidth}
+			\centering
+			\scriptsize \textbf{LIME Explanation (RF): Income Investment}\\[0.05cm]
+			\includegraphics[width=\linewidth,height=0.64\textheight,keepaspectratio]{figures/extracted_img_16.jpg}
+		\end{column}
+	\end{columns}
 \end{frame}
 
 \section{Deep Learning Approach}
@@ -554,15 +561,15 @@
 			}
 		\end{column}
 		\begin{column}{0.52\textwidth}
-			\textbf{DCN Results (Multi-Task)}
+			\textbf{DCN Results}
 			\vspace{0.2cm}
 			\resizebox{\linewidth}{!}{%
 				\begin{tabular}{lccccc}
 					\toprule
 					\textbf{Task} & \textbf{Acc} & \textbf{Prec} & \textbf{Rec} & \textbf{F1} & \textbf{AUC} \\
 					\midrule
-					Income        & 0.783        & 0.852         & 0.544        & 0.664       & 0.767        \\
-					Accum.        & 0.795        & 0.846         & 0.708        & 0.771       & 0.852        \\
+					Income        & 0.776        & 0.827         & 0.547        & 0.659       & 0.765        \\
+					Accum.        & 0.795        & 0.851         & 0.702        & 0.769       & 0.848        \\
 					\bottomrule
 				\end{tabular}%
 			}
@@ -570,7 +577,7 @@
 			\vspace{0.25cm}
 			\begin{block}{Why Not Selected}
 				\begin{itemize}
-					\item Slight gain for \textbf{Income} vs tuned RF.
+					\item Slight gain for \textbf{Income} vs tuned RF for F1, but not for precision.
 					\item Lower performance for \textbf{Accumulation} vs tuned LightGBM.
 					\item Lower interpretability than tree-based models with SHAP/LIME.
 				\end{itemize}
