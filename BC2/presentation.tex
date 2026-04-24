@@ -257,37 +257,29 @@
 % 	\end{columns}
 % \end{frame}
 % --- Slide: Outlier Detection ---
-\begin{frame}
+\begin{frame}[shrink=12]
 	\frametitle{Outlier Detection — Isolation Forest}
 	\begin{columns}[T]
 		\begin{column}{0.50\textwidth}
 			\textbf{Method choice}
-			\begin{itemize}
+			\begin{itemize}\setlength\itemsep{2pt}
 				\item \textbf{Isolation Forest} (300 estimators, \texttt{random\_state=42})
 				\item Features standardised (StandardScaler) before fitting
 				\item \texttt{Gender} (binary): inclusion does not distort the geometry
 				\item Threshold: \textbf{5th percentile} of anomaly scores\\
 				      $\Rightarrow$ flags $\approx 5\%$ of observations as outliers
 			\end{itemize}
-			\vspace{6pt}
+			\vspace{3pt}
 			\textbf{Decision: outliers retained}
-			\begin{itemize}
+			\begin{itemize}\setlength\itemsep{2pt}
 				\item Extreme \texttt{Income} / \texttt{Wealth} values are \textbf{valid} business profiles, not data errors
 				\item Preferred treatment: \textbf{robust scaling} + \textbf{logarithmic transformation}
 			\end{itemize}
 		\end{column}
 		\begin{column}{0.46\textwidth}
-			\textbf{2D projections (Isolation Forest)}\\[4pt]
-			\begin{tikzpicture}
-				\node[draw=darkblue, fill=lightblue!10, rounded corners=2mm,
-					text width=5.0cm, align=left, inner sep=6pt, font=\scriptsize] {
-					\textbf{Key observations from scatter plots}\\[3pt]
-					\textit{Income vs Wealth:} outliers concentrated at very high values — long right tail confirms extreme inequality.\\[3pt]
-					\textit{Age vs Income / Wealth:} older clients more likely to be flagged — plausible, not errors.\\[3pt]
-					\textit{t-SNE projection:} outliers (red) form a sparse fringe around the main cluster (blue). No clear isolated sub-group.\\[3pt]
-					\textbf{Conclusion:} high-value financial profiles are structurally different, not corrupted data.
-				};
-			\end{tikzpicture}
+			\textbf{2D projections (Isolation Forest)}\\[2pt]
+			\includegraphics[width=\linewidth]{figures/outliers_tsne.png}\\[2pt]
+			{\scriptsize \textit{t-SNE projection:} outliers (red) form a sparse fringe around the main cluster (blue). No clear isolated sub-group.}
 		\end{column}
 	\end{columns}
 \end{frame}
