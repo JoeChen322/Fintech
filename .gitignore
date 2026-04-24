@@ -544,3 +544,4 @@ TSWLatexianTemp*
 uv.lock
 skills-lock.json
 .agents/
+.claude/
