@@ -135,7 +135,7 @@ $$
 
 $$
 w_t \mapsto \Pi_{\mathcal{W}}(w_t), \qquad
-\mathcal{W} = \Bigl\{ w : \sum_j \lvert w_j \rvert \leq L \Bigr\}, \qquad L \in \{1.0,\, 1.5,\, 2.0\}.
+\mathcal{W} = \Bigl\lbrace w : \sum_j \lvert w_j \rvert \leq L \Bigr\rbrace, \qquad L \in \lbrace 1.0,\; 1.5,\; 2.0 \rbrace.
 $$
 
   Report how $\mathrm{IR}$ and $\mathrm{TE}$ trade off against the cap.
@@ -200,7 +200,7 @@ $$
 
 ### M4.5 VaR guardrail
 
-- [ ] Apply $\mathrm{VaR}_{1\%,\,1\mathrm{M}}(\hat{x}_t) \leq 8\%$ scaling before computing replica returns (same rule as the Elastic Net pipeline).
+- [ ] Apply the Gaussian 1-month 1% VaR cap $\mathrm{VaR}(\hat{x}_t) \leq 0.08$ before computing replica returns (same rule as the Elastic Net pipeline).
 
 ### M4.6 Extension — EM for the noise scalars
 
@@ -238,7 +238,7 @@ $$
 - [ ] Tracking-error volatility plus an optional turnover penalty:
 
 $$
-\mathcal{L}(\theta) = \mathrm{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \{0,\, 10^{-3},\, 10^{-2}\}.
+\mathcal{L}(\theta) = \mathrm{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \lbrace 0, 10^{-3}, 10^{-2} \rbrace.
 $$
 
 ### M5.4 Training regime
@@ -256,7 +256,7 @@ $$
 - [ ] Load each member's `results/<track>.pkl` and produce one master table:
 
 $$
-\{\text{OLS}, \text{Ridge}, \text{Lasso}, \text{ElasticNet}, \text{Huber}, \text{Kalman}, \text{KF+EM}, \text{NN}, \text{NN+Attn}\}\times\{\text{gross},\, \text{net-of-cost}\}
+\lbrace \text{OLS}, \text{Ridge}, \text{Lasso}, \text{ElasticNet}, \text{Huber}, \text{Kalman}, \text{KF+EM}, \text{NN}, \text{NN+Attn} \rbrace \times \lbrace \text{gross}, \text{net-of-cost} \rbrace
 $$
 
 - [ ] Plots for the best model of each family: cumulative returns (target vs. replica), rolling correlation, weights heatmap over time.
@@ -279,7 +279,7 @@ $$
 | $\rho$ | $\mathrm{corr}(r^{\text{replica}}_t,\, y_t)$ |
 | $\overline{\mathrm{GE}}$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert w_{t,j} \rvert \,\bigr]$ — average gross exposure |
 | $\bar T$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert \Delta w_{t,j} \rvert \,\bigr]$ — average weekly turnover |
-| $\mathrm{VaR}_{1\%,\,1\mathrm{M}}$ | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ — Gaussian 1-month 1% VaR |
+| $\mathrm{VaR}$ (Gaussian, 1% / 1 month) | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ |
 | $c_t$ | $\tau \cdot \sum_j \lvert w_{t,j} - w_{t-1,j} \rvert$ — per-rebalance transaction cost |
 
 ---
