@@ -44,9 +44,9 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 - [ ] Subtract the cost term at every rebalance date $t$:
 
-  $$
-  c_t = \tau \cdot \sum_{j=1}^{n} \lvert w_{t,j} - w_{t-1,j} \rvert, \qquad \tau = 0.0005
-  $$
+$$
+c_t = \tau \cdot \sum_{j=1}^{n} \lvert w_{t,j} - w_{t-1,j} \rvert, \qquad \tau = 0.0005
+$$
 
   with the first-rebalance term $c_0 = \tau \cdot \sum_{j} \lvert w_{0,j} \rvert$ (entering from cash).
 
@@ -54,9 +54,9 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 - [ ] Add a second results table alongside the gross table showing net annualized return, Sharpe, $\mathrm{TE}$, and $\mathrm{IR}$. Include the average weekly turnover and the annualized cost drag:
 
-  $$
-  \bar{T} = \mathbb{E}_t \!\left[\, \sum_{j} \lvert \Delta w_{t,j} \rvert \,\right], \qquad \text{drag} = 52 \cdot \tau \cdot \bar{T}
-  $$
+$$
+\bar{T} = \mathbb{E}_t \!\left[\, \sum_{j} \lvert \Delta w_{t,j} \rvert \,\right], \qquad \text{drag} = 52 \cdot \tau \cdot \bar{T}
+$$
 
 ### M1.4 Cost sensitivity sweep
 
@@ -66,9 +66,9 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 - [ ] Add a turnover term directly inside the optimisation, not just in post-scoring:
 
-  $$
-  \hat{\beta}_t = \arg\min_{\beta} \; \tfrac{1}{2N}\lVert y - X\beta \rVert_2^{2} + \alpha\!\left(\rho\lVert\beta\rVert_1 + (1-\rho)\lVert\beta\rVert_2^{2}\right) + \gamma\lVert \beta - \hat{\beta}_{t-1} \rVert_1
-  $$
+$$
+\hat{\beta}_t = \arg\min_{\beta} \; \tfrac{1}{2N}\lVert y - X\beta \rVert_2^{2} + \alpha\!\left(\rho\lVert\beta\rVert_1 + (1-\rho)\lVert\beta\rVert_2^{2}\right) + \gamma\lVert \beta - \hat{\beta}_{t-1} \rVert_1
+$$
 
   Tune $\gamma$ so that net $\mathrm{IR}$ is maximised and compare with the post-hoc cost subtraction from M1.2.
 
@@ -102,14 +102,14 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 - [ ] Replace the squared loss with the Huber loss to test robustness under crisis tails:
 
-  $$
-  \mathcal{L}_\delta(\beta) = \sum_t \rho_\delta\!\bigl( y_t - x_t^{\top}\beta \bigr), \qquad
-  \rho_\delta(u) =
-  \begin{cases}
-    \tfrac{1}{2} u^{2} & \lvert u \rvert \leq \delta, \\
-    \delta\!\left(\lvert u \rvert - \tfrac{1}{2}\delta\right) & \lvert u \rvert > \delta.
-  \end{cases}
-  $$
+$$
+\mathcal{L}_\delta(\beta) = \sum_t \rho_\delta\!\bigl( y_t - x_t^{\top}\beta \bigr), \qquad
+\rho_\delta(u) =
+\begin{cases}
+  \tfrac{1}{2} u^{2} & \lvert u \rvert \leq \delta, \\
+  \delta\!\left(\lvert u \rvert - \tfrac{1}{2}\delta\right) & \lvert u \rvert > \delta.
+\end{cases}
+$$
 
   Use `sklearn.linear_model.HuberRegressor`; tune $\delta \in \{1.0, 1.35, 2.0\}$.
 
@@ -125,18 +125,18 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 - [ ] Hold weights between rebalances for $\Delta t \in \{1, 4, 12\}$ weeks: re-fit only on rebalance dates, in-between weeks apply the previously fit weights to the current futures returns,
 
-  $$
-  r^{\text{replica}}_t = w_{t^{\star}}^{\top}\, r_t, \qquad t^{\star} = \Delta t \cdot \lfloor t / \Delta t \rfloor.
-  $$
+$$
+r^{\text{replica}}_t = w_{t^{\star}}^{\top}\, r_t, \qquad t^{\star} = \Delta t \cdot \lfloor t / \Delta t \rfloor.
+$$
 
 ### M3.2 Gross-exposure / leverage cap
 
 - [ ] Add a projection onto the UCITS-like feasible set after each fit:
 
-  $$
-  w_t \mapsto \Pi_{\mathcal{W}}(w_t), \qquad
-  \mathcal{W} = \Bigl\{ w : \sum_j \lvert w_j \rvert \leq L \Bigr\}, \qquad L \in \{1.0,\, 1.5,\, 2.0\}.
-  $$
+$$
+w_t \mapsto \Pi_{\mathcal{W}}(w_t), \qquad
+\mathcal{W} = \Bigl\{ w : \sum_j \lvert w_j \rvert \leq L \Bigr\}, \qquad L \in \{1.0,\, 1.5,\, 2.0\}.
+$$
 
   Report how $\mathrm{IR}$ and $\mathrm{TE}$ trade off against the cap.
 
@@ -189,18 +189,18 @@ $$
 
 - [ ] Propagate the filter forward through the full sample:
 
-  $$
-  \begin{aligned}
-  \hat{x}_{t \mid t-1} &= A\, \hat{x}_{t-1 \mid t-1}, \\
-  P_{t \mid t-1}       &= A\, P_{t-1 \mid t-1}\, A^{\top} + B B^{\top}, \\
-  K_t                  &= P_{t \mid t-1}\, C_t^{\top} \bigl( C_t\, P_{t \mid t-1}\, C_t^{\top} + D^{2} \bigr)^{-1}, \\
-  \hat{x}_{t \mid t}   &= \hat{x}_{t \mid t-1} + K_t \bigl( y_t - C_t\, \hat{x}_{t \mid t-1} \bigr).
-  \end{aligned}
-  $$
+$$
+\begin{aligned}
+\hat{x}_{t \mid t-1} &= A\, \hat{x}_{t-1 \mid t-1}, \\
+P_{t \mid t-1}       &= A\, P_{t-1 \mid t-1}\, A^{\top} + B B^{\top}, \\
+K_t                  &= P_{t \mid t-1}\, C_t^{\top} \bigl( C_t\, P_{t \mid t-1}\, C_t^{\top} + D^{2} \bigr)^{-1}, \\
+\hat{x}_{t \mid t}   &= \hat{x}_{t \mid t-1} + K_t \bigl( y_t - C_t\, \hat{x}_{t \mid t-1} \bigr).
+\end{aligned}
+$$
 
 ### M4.5 VaR guardrail
 
-- [ ] Apply $\mathrm{VaR}_{1\%,\,1\text{M}}(\hat x_t) \leq 8\%$ scaling before computing replica returns (same rule as the Elastic Net pipeline).
+- [ ] Apply $\mathrm{VaR}_{1\%,\,1\mathrm{M}}(\hat{x}_t) \leq 8\%$ scaling before computing replica returns (same rule as the Elastic Net pipeline).
 
 ### M4.6 Extension — EM for the noise scalars
 
@@ -237,9 +237,9 @@ $$
 
 - [ ] Tracking-error volatility plus an optional turnover penalty:
 
-  $$
-  \mathcal{L}(\theta) = \mathrm{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \{0,\, 10^{-3},\, 10^{-2}\}.
-  $$
+$$
+\mathcal{L}(\theta) = \mathrm{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \{0,\, 10^{-3},\, 10^{-2}\}.
+$$
 
 ### M5.4 Training regime
 
@@ -255,9 +255,9 @@ $$
 
 - [ ] Load each member's `results/<track>.pkl` and produce one master table:
 
-  $$
-  \{\text{OLS}, \text{Ridge}, \text{Lasso}, \text{ElasticNet}, \text{Huber}, \text{Kalman}, \text{KF+EM}, \text{NN}, \text{NN+Attn}\}\times\{\text{gross},\, \text{net-of-cost}\}
-  $$
+$$
+\{\text{OLS}, \text{Ridge}, \text{Lasso}, \text{ElasticNet}, \text{Huber}, \text{Kalman}, \text{KF+EM}, \text{NN}, \text{NN+Attn}\}\times\{\text{gross},\, \text{net-of-cost}\}
+$$
 
 - [ ] Plots for the best model of each family: cumulative returns (target vs. replica), rolling correlation, weights heatmap over time.
 - [ ] "Findings" markdown cell: which model wins on $\mathrm{IR}$, which wins on turnover, where the ranking flips when $\tau > \tau^{\star}$, and survival in the 2008/2020 stress windows.
@@ -279,7 +279,7 @@ $$
 | $\rho$ | $\mathrm{corr}(r^{\text{replica}}_t,\, y_t)$ |
 | $\overline{\mathrm{GE}}$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert w_{t,j} \rvert \,\bigr]$ — average gross exposure |
 | $\bar T$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert \Delta w_{t,j} \rvert \,\bigr]$ — average weekly turnover |
-| $\mathrm{VaR}_{1\%,\,1\text{M}}$ | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ — Gaussian 1-month 1% VaR |
+| $\mathrm{VaR}_{1\%,\,1\mathrm{M}}$ | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ — Gaussian 1-month 1% VaR |
 | $c_t$ | $\tau \cdot \sum_j \lvert w_{t,j} - w_{t-1,j} \rvert$ — per-rebalance transaction cost |
 
 ---
