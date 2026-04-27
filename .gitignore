@@ -543,5 +543,6 @@ TSWLatexianTemp*
 #*Notes.bib
 uv.lock
 skills-lock.json
+.mcp.json
 .agents/
 .claude/

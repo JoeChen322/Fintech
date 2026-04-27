@@ -52,7 +52,7 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 ### M1.3 Net-of-cost reporting
 
-- [ ] Add a second results table alongside the gross table showing net annualized return, Sharpe, $\operatorname{TE}$, and $\operatorname{IR}$. Include the average weekly turnover and the annualized cost drag:
+- [ ] Add a second results table alongside the gross table showing net annualized return, Sharpe, $\mathrm{TE}$, and $\mathrm{IR}$. Include the average weekly turnover and the annualized cost drag:
 
   $$
   \bar{T} = \mathbb{E}_t \!\left[\, \sum_{j} \lvert \Delta w_{t,j} \rvert \,\right], \qquad \text{drag} = 52 \cdot \tau \cdot \bar{T}
@@ -60,7 +60,7 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
 ### M1.4 Cost sensitivity sweep
 
-- [ ] Re-run M1.2/M1.3 with $\tau \in \{0.0002,\, 0.0005,\, 0.0010\}$ and plot $\operatorname{IR}(\tau)$ for the Elastic Net baseline.
+- [ ] Re-run M1.2/M1.3 with $\tau \in \{0.0002,\, 0.0005,\, 0.0010\}$ and plot $\mathrm{IR}(\tau)$ for the Elastic Net baseline.
 
 ### M1.5 Extension — Turnover-penalised optimisation
 
@@ -70,9 +70,9 @@ The notebook's final two cells list extensions that are **not yet implemented**.
   \hat{\beta}_t = \arg\min_{\beta} \; \tfrac{1}{2N}\lVert y - X\beta \rVert_2^{2} + \alpha\!\left(\rho\lVert\beta\rVert_1 + (1-\rho)\lVert\beta\rVert_2^{2}\right) + \gamma\lVert \beta - \hat{\beta}_{t-1} \rVert_1
   $$
 
-  Tune $\gamma$ so that net $\operatorname{IR}$ is maximised and compare with the post-hoc cost subtraction from M1.2.
+  Tune $\gamma$ so that net $\mathrm{IR}$ is maximised and compare with the post-hoc cost subtraction from M1.2.
 
-**Done when:** M2–M5 can call the harness without touching its internals, and the net-of-cost table + $\operatorname{IR}(\tau)$ plot live in the notebook.
+**Done when:** M2–M5 can call the harness without touching its internals, and the net-of-cost table + $\mathrm{IR}(\tau)$ plot live in the notebook.
 
 ---
 
@@ -87,16 +87,16 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 ### M2.2 Pure Lasso sweep
 
 - [ ] `Lasso(alpha=`$\alpha$`)` over $\alpha \in \{10^{-5},\, 10^{-4},\, 5\!\cdot\!10^{-4},\, 10^{-3},\, 5\!\cdot\!10^{-3},\, 10^{-2}\}$.
-- [ ] Plot sparsity $s(\alpha) = \lvert\{j : \beta_j \neq 0\}\rvert$ versus tracking error $\operatorname{TE}(\alpha)$.
+- [ ] Plot sparsity $s(\alpha) = \lvert\{j : \beta_j \neq 0\}\rvert$ versus tracking error $\mathrm{TE}(\alpha)$.
 
 ### M2.3 Pure Ridge sweep
 
-- [ ] `Ridge(alpha=`$\alpha$`)` over the same grid; compare $\operatorname{TE}$ and average gross exposure versus Elastic Net at matched $\alpha$.
+- [ ] `Ridge(alpha=`$\alpha$`)` over the same grid; compare $\mathrm{TE}$ and average gross exposure versus Elastic Net at matched $\alpha$.
 
 ### M2.4 Top-$K$ futures pre-selection
 
-- [ ] At each rebalance, keep only the $K$ futures with highest $\lvert \operatorname{corr}(r_j, y) \rvert$ inside the training window; run the best linear model on the reduced set.
-- [ ] Ablation $K \in \{3, 5, 7, 11\}$; plot $\operatorname{TE}(K)$ and $\bar{T}(K)$.
+- [ ] At each rebalance, keep only the $K$ futures with highest $\lvert \mathrm{corr}(r_j, y) \rvert$ inside the training window; run the best linear model on the reduced set.
+- [ ] Ablation $K \in \{3, 5, 7, 11\}$; plot $\mathrm{TE}(K)$ and $\bar{T}(K)$.
 
 ### M2.5 Extension — Huber-robust regression
 
@@ -113,7 +113,7 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 
   Use `sklearn.linear_model.HuberRegressor`; tune $\delta \in \{1.0, 1.35, 2.0\}$.
 
-**Done when:** a single table {OLS, Ridge, Lasso, Elastic Net, Huber} × {all 11, top-5} with $\operatorname{IR}$, $\operatorname{TE}$, $\rho$, $\overline{\operatorname{GE}}$, $\bar{T}$, ranked by net $\operatorname{IR}$.
+**Done when:** a single table {OLS, Ridge, Lasso, Elastic Net, Huber} × {all 11, top-5} with $\mathrm{IR}$, $\mathrm{TE}$, $\rho$, $\overline{\mathrm{GE}}$, $\bar{T}$, ranked by net $\mathrm{IR}$.
 
 ---
 
@@ -138,7 +138,7 @@ The notebook's final two cells list extensions that are **not yet implemented**.
   \mathcal{W} = \Bigl\{ w : \sum_j \lvert w_j \rvert \leq L \Bigr\}, \qquad L \in \{1.0,\, 1.5,\, 2.0\}.
   $$
 
-  Report how $\operatorname{IR}$ and $\operatorname{TE}$ trade off against the cap.
+  Report how $\mathrm{IR}$ and $\mathrm{TE}$ trade off against the cap.
 
 ### M3.3 Long-only variant
 
@@ -149,11 +149,11 @@ The notebook's final two cells list extensions that are **not yet implemented**.
 - [ ] Re-score every model (yours and the baselines) on two isolated sub-samples:
   - **2008 crisis:** 2008-09-01 → 2009-06-30.
   - **COVID crash:** 2020-02-15 → 2020-06-30.
-- [ ] Report per-window $\operatorname{TE}$, max drawdown, correlation, and $\operatorname{VaR}_{\text{empirical}}$ breaches.
+- [ ] Report per-window $\mathrm{TE}$, max drawdown, correlation, and $\mathrm{VaR}_{\text{empirical}}$ breaches.
 
 ### M3.5 Consolidated comparison (B6 in the original plan)
 
-- [ ] Build the comparison table: rows = $\{\text{OLS},\, \text{Ridge},\, \text{Lasso},\, \text{ElasticNet},\, \text{Huber}\}$ × $\{1\text{w},\, 4\text{w},\, 12\text{w}\}$ × $\{\text{no cap},\, L = 1.5,\, L = 2.0\}$; columns = $\{\operatorname{IR}, \operatorname{TE}, \rho, \overline{\operatorname{GE}}, \bar{T}\}$.
+- [ ] Build the comparison table: rows = $\{\text{OLS},\, \text{Ridge},\, \text{Lasso},\, \text{ElasticNet},\, \text{Huber}\}$ × $\{1\text{w},\, 4\text{w},\, 12\text{w}\}$ × $\{\text{no cap},\, L = 1.5,\, L = 2.0\}$; columns = $\{\mathrm{IR}, \mathrm{TE}, \rho, \overline{\mathrm{GE}}, \bar{T}\}$.
 
 **Done when:** the table is published + a "Findings" markdown cell explains which configuration survives the two stress windows best.
 
@@ -200,11 +200,11 @@ $$
 
 ### M4.5 VaR guardrail
 
-- [ ] Apply $\operatorname{VaR}_{1\%,\,1\text{M}}(\hat x_t) \leq 8\%$ scaling before computing replica returns (same rule as the Elastic Net pipeline).
+- [ ] Apply $\mathrm{VaR}_{1\%,\,1\text{M}}(\hat x_t) \leq 8\%$ scaling before computing replica returns (same rule as the Elastic Net pipeline).
 
 ### M4.6 Extension — EM for the noise scalars
 
-- [ ] Replace the $\sigma_w$ grid with EM estimation of $(B, D)$ using `pykalman.KalmanFilter.em()`. Compare EM-tuned against grid-tuned on $\operatorname{IR}$ and CPU time.
+- [ ] Replace the $\sigma_w$ grid with EM estimation of $(B, D)$ using `pykalman.KalmanFilter.em()`. Compare EM-tuned against grid-tuned on $\mathrm{IR}$ and CPU time.
 
 ### M4.7 Extension (bonus) — Regime-switching KF
 
@@ -238,13 +238,13 @@ $$
 - [ ] Tracking-error volatility plus an optional turnover penalty:
 
   $$
-  \mathcal{L}(\theta) = \operatorname{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \{0,\, 10^{-3},\, 10^{-2}\}.
+  \mathcal{L}(\theta) = \mathrm{Var}_{t:\,t+H}\!\bigl( w_t^{\top} r_s - y_s \bigr) + \lambda \lVert \Delta w_t \rVert_1, \qquad H = 12,\; \lambda \in \{0,\, 10^{-3},\, 10^{-2}\}.
   $$
 
 ### M5.4 Training regime
 
 - [ ] Rolling train / out-of-sample predict with retrain cadence $\Delta t \in \{1, 4\}$ weeks (reuse M3.1's harness).
-- [ ] Device: `torch.device('cuda' if torch.cuda.is_available() else 'cpu')`; early stopping on validation $\operatorname{TE}$.
+- [ ] Device: `torch.device('cuda' if torch.cuda.is_available() else 'cpu')`; early stopping on validation $\mathrm{TE}$.
 
 ### M5.5 Extension — PCA-compressed or attention-based features
 
@@ -260,7 +260,7 @@ $$
   $$
 
 - [ ] Plots for the best model of each family: cumulative returns (target vs. replica), rolling correlation, weights heatmap over time.
-- [ ] "Findings" markdown cell: which model wins on $\operatorname{IR}$, which wins on turnover, where the ranking flips when $\tau > \tau^{\star}$, and survival in the 2008/2020 stress windows.
+- [ ] "Findings" markdown cell: which model wins on $\mathrm{IR}$, which wins on turnover, where the ranking flips when $\tau > \tau^{\star}$, and survival in the 2008/2020 stress windows.
 
 ### M5.7 Slides / report
 
@@ -274,12 +274,12 @@ $$
 
 | Symbol | Definition |
 | :----: | :--------- |
-| $\operatorname{TE}$ | $\sqrt{52 \cdot \operatorname{Var}(r^{\text{replica}}_t - y_t)}$ — annualized tracking error |
-| $\operatorname{IR}$ | $\dfrac{52 \cdot \mathbb{E}[r^{\text{replica}}_t - y_t]}{\operatorname{TE}}$ — information ratio |
-| $\rho$ | $\operatorname{corr}(r^{\text{replica}}_t,\, y_t)$ |
-| $\overline{\operatorname{GE}}$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert w_{t,j} \rvert \,\bigr]$ — average gross exposure |
+| $\mathrm{TE}$ | $\sqrt{52 \cdot \mathrm{Var}(r^{\text{replica}}_t - y_t)}$ — annualized tracking error |
+| $\mathrm{IR}$ | $\dfrac{52 \cdot \mathbb{E}[r^{\text{replica}}_t - y_t]}{\mathrm{TE}}$ — information ratio |
+| $\rho$ | $\mathrm{corr}(r^{\text{replica}}_t,\, y_t)$ |
+| $\overline{\mathrm{GE}}$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert w_{t,j} \rvert \,\bigr]$ — average gross exposure |
 | $\bar T$ | $\mathbb{E}_t\!\bigl[\, \sum_j \lvert \Delta w_{t,j} \rvert \,\bigr]$ — average weekly turnover |
-| $\operatorname{VaR}_{1\%,\,1\text{M}}$ | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ — Gaussian 1-month 1% VaR |
+| $\mathrm{VaR}_{1\%,\,1\text{M}}$ | $-\Phi^{-1}(0.01) \cdot \hat\sigma_w \cdot \sqrt{4}$ — Gaussian 1-month 1% VaR |
 | $c_t$ | $\tau \cdot \sum_j \lvert w_{t,j} - w_{t-1,j} \rvert$ — per-rebalance transaction cost |
 
 ---
@@ -289,7 +289,7 @@ $$
 | Week | M1 | M2 | M3 | M4 | M5 |
 | :--: | :- | :- | :- | :- | :- |
 | 1 | Harness refactor | OLS + sparsity plots | Cadence sweep 1w/4w/12w | Scaffolding + Ridge init | Feature design + MLP skeleton |
-| 2 | Cost accounting + $\operatorname{IR}(\tau)$ | Ridge + Lasso sweeps | Gross cap + long-only | KF recursion + VaR guard | Train loop + val metric |
+| 2 | Cost accounting + $\mathrm{IR}(\tau)$ | Ridge + Lasso sweeps | Gross cap + long-only | KF recursion + VaR guard | Train loop + val metric |
 | 3 | Turnover-penalised opt. | Huber + top-$K$ pre-selection | Stress windows (2008, 2020) | EM tuning of $(B, D)$ | Turnover penalty ablation |
 | 4 | Final cost-drag table | Consolidated linear table | Consolidated B6 table | Regime-switching KF | PCA / attention variant |
 | 5 | — | — | — | — | Master table + slides |
