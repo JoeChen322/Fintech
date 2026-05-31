@@ -112,7 +112,7 @@
 				\node[stage, right=0.85cm of data] (stat) {\textbf{Stationarize}\\[1pt]\scriptsize log-diff prices\\first-diff rates};
 				\node[stage, right=0.85cm of stat] (split) {\textbf{Chronological split}\\[1pt]\scriptsize 60 / 20 / 20\\train on normals only};
 				\node[stage, right=0.85cm of split] (det) {\textbf{Five novelty\\detectors}\\[1pt]\scriptsize trained on normal weeks};
-				\node[stage, right=0.85cm of det] (thr) {\textbf{Score $+$ threshold}\\[1pt]\scriptsize $F_{\beta=1.5}$\\precision floor};
+				\node[stage, right=0.85cm of det] (thr) {\textbf{Score $+$ threshold}\\[1pt]\scriptsize $F_2$, 1-week lag\\precision floor};
 				\node[stage, right=0.85cm of thr] (bt) {\textbf{Risk-off flag}\\[1pt]\scriptsize rotate to cash\\backtest drawdown};
 				\foreach \a/\b in {data/stat, stat/split, split/det, det/thr, thr/bt}
 				\draw[arr] (\a) -- (\b);
@@ -172,7 +172,7 @@
 	\end{tikzpicture}
 	\vspace{0.4em}
 
-	\footnotesize One unified protocol $\Rightarrow$ scores are directly comparable across all five.
+	\footnotesize One shared objective ($F_2$) tunes every threshold $\Rightarrow$ comparable operating points across all five.
 \end{frame}
 
 % =========================================================================
@@ -198,8 +198,9 @@
 		\textbf{Strict chronological split}
 		\begin{itemize}\small
 			\item Fit on the \emph{past} only -- faithful to live deployment.
-			\item Threshold: maximise $F_{\beta=1.5}$ (recall weighted $\sim$2.25$\times$),
+			\item Threshold: all five maximise $F_2$ ($\beta=2.0$, recall weighted 4$\times$),
 			      subject to a precision floor.
+			\item Backtest acts on the signal with a \textbf{1-week lag} -- no same-week look-ahead.
 		\end{itemize}
 		\column{0.5\textwidth}
 		\textbf{Metrics for the risk officer}
@@ -288,32 +289,39 @@
 
 % =========================================================================
 \begin{frame}{Portfolio impact: every flag cuts drawdown}
+	\vspace{-0.2em}
+	\centering
+	\includegraphics[width=0.74\textwidth,height=0.46\textheight,keepaspectratio]{figures/14_cross_model_equity_curve_comparison.pdf}
+	\vspace{0.1em}
+
 	\begin{columns}[T,onlytextwidth]
-		\column{0.62\textwidth}
-		\vspace{-0.4em}
-		\includegraphics[width=\textwidth,height=0.74\textheight,keepaspectratio]{figures/14_cross_model_equity_curve_comparison.pdf}
-		\column{0.36\textwidth}
+		\column{0.47\textwidth}
 		\textbf{Test-window backtest}\\
 		{\scriptsize cash when flagged, else MXUS}
-		\vspace{0.3em}
+		\vspace{0.2em}
 
 		\scriptsize
+		\setlength{\tabcolsep}{5pt}
 		\begin{tabular}{lrr}
 			\toprule
 			Strategy           & Wealth        & Max DD           \\
 			\midrule
 			Buy \& hold MXUS   & 1.87          & -27.7\%          \\
-			LSTM autoencoder   & 2.18          & -19.7\%          \\
-			Optimized IF       & 1.90          & -13.0\%          \\
-			COPOD amber        & \textbf{2.73} & \textbf{-11.6\%} \\
+			LSTM autoencoder   & \textbf{2.03} & -20.2\%          \\
+			Optimized IF       & 1.57          & -19.7\%          \\
+			COPOD amber        & 1.80          & \textbf{-18.4\%} \\
 			\bottomrule
 		\end{tabular}
 
-		\vspace{0.5em}
-		\small
+		\vspace{0.3em}
+		{\scriptsize Signal acts with a 1-week lag (no same-week look-ahead).}
+
+		\column{0.49\textwidth}
+		\footnotesize
 		\begin{itemize}
-			\item All four \textbf{beat buy \& hold} on drawdown.
-			\item \textbf{COPOD amber} wins both axes out-of-sample.
+			\item All three \textbf{cut drawdown} vs buy \& hold ($-$27.7\% $\to$ $-$18 to $-$20\%).
+			\item \textbf{Only the LSTM also grows wealth} above buy \& hold; IF/COPOD trade
+			      return for deeper drawdown control.
 		\end{itemize}
 	\end{columns}
 \end{frame}
@@ -324,9 +332,9 @@
 	\hfill
 	\metriccard{Best precision}{80\%}{VAE / LSTM / GAN-recon}
 	\hfill
-	\metriccard{Best OOS wealth}{2.73}{COPOD amber}
+	\metriccard{Beats B\&H wealth}{2.03}{LSTM autoencoder}
 	\hfill
-	\metriccard{Min.\ drawdown}{$-$11.6\%}{vs.\ $-$27.7\% buy \& hold}
+	\metriccard{Min.\ drawdown}{$-$18.4\%}{COPOD, vs.\ $-$27.7\% B\&H}
 
 	\vspace{0.8em}
 	\begin{itemize}
@@ -336,7 +344,8 @@
 		      Capital preservation $\to$ high-recall Top-$K$ IF; avoid false alarms
 		      $\to$ high-precision deep models; balanced $\to$ COPOD.
 		\item \textbf{The robust result}: \emph{every} warning system reduces out-of-sample
-		      drawdown (down to $-11.6\%$) while matching or beating buy-and-hold wealth.
+		      drawdown ($-27.7\%\to-18$ to $-20\%$); the LSTM is the one that also beats
+		      buy-and-hold on final wealth.
 	\end{itemize}
 	\begin{alertblock}{Bottom line}
 		Framing market stress as novelty detection turns five very different models into
