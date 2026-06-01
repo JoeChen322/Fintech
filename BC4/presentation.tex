@@ -216,6 +216,81 @@
 \end{frame}
 
 % =========================================================================
+% PART 1 -- Isolation Forest
+% =========================================================================
+\begin{frame}{Part 1 $\cdot$ Isolation Forest: the warning signal in action}
+	\centering
+	\includegraphics[width=\textwidth,height=0.64\textheight,keepaspectratio]{figures/if_01_temporal_anomaly_score.pdf}
+
+	\vfill
+	\footnotesize
+	Score is \emph{inverted} (lower $=$ more abnormal); it dips below the threshold at every
+	major stress -- 2008, 2011, 2020. \textbf{Top-$K$ feature selection lifts test recall
+		$48\%\to83\%$} ($F_2\;0.50\to0.76$) -- the strongest recall of any detector.
+\end{frame}
+
+% =========================================================================
+\begin{frame}{Part 1 $\cdot$ What drives the signal}
+	\begin{columns}[c,onlytextwidth]
+		\column{0.54\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{figures/if_02_feature_importance.pdf}
+		\column{0.42\textwidth}
+		\small Permutation importance (test-set ROC-AUC drop):
+		\begin{itemize}\footnotesize
+			\item Top signals are \textbf{52-week drawdowns}, \textbf{VIX momentum}, and
+			      \textbf{cross-asset correlations} with US equity.
+			\item The forest keys on \emph{classic crisis tells}, not artefacts.
+			\item Risk-managed, \textbf{Top-$K$ IF cuts out-of-sample drawdown to
+				      $-13.0\%$} (vs.\ $-27.7\%$ buy \& hold) -- the deepest cut of all five.
+		\end{itemize}
+	\end{columns}
+\end{frame}
+
+% =========================================================================
+% PART 2 -- COPOD
+% =========================================================================
+\begin{frame}{Part 2 $\cdot$ COPOD: copula tails, asset-grouped}
+	\begin{columns}[c,onlytextwidth]
+		\column{0.39\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{figures/copod_02_confusion_matrix_copod_asset_grouped_f_2_0.pdf}
+		\column{0.59\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,height=0.44\textheight,keepaspectratio]{figures/copod_03_roc_pr_copod_asset_grouped_f_2_0.pdf}
+
+		\vspace{0.3em}
+		\footnotesize
+		Per-feature \textbf{min(left, right) tail probability}, aggregated as
+		$-\tfrac1d\sum\ln(\cdot)$. Four asset families $\to$ sub-COPOD $\to$ meta-COPOD
+		avoids \emph{feature dilution}. Test: recall 41\%, PR-AUC 0.45 ($\sim4\times$ baseline).
+	\end{columns}
+\end{frame}
+
+% =========================================================================
+\begin{frame}{Part 2 $\cdot$ COPOD: amber / red operational gates}
+	\begin{columns}[c,onlytextwidth]
+		\column{0.44\textwidth}
+		\centering
+		\begin{tikzpicture}[font=\scriptsize]
+			\node[chip, fill=riskon!18, draw=riskon!55, text width=4.7cm, align=left] (g)
+			{\textbf{\color{riskon}GREEN} -- normal regime\\190 weeks};
+			\node[chip, fill=accent!20, draw=accent!75, text width=4.7cm, align=left, below=2mm of g] (a)
+			{\textbf{\color{accent}AMBER} -- monitor (train-normal p80)\\27 weeks $\cdot$ \textbf{7} crises flagged};
+			\node[chip, fill=riskoff!20, draw=riskoff!60, text width=4.7cm, align=left, below=2mm of a] (r)
+			{\textbf{\color{riskoff}RED} -- hedge (train-normal p99)\\5 weeks $\cdot$ \textbf{5} crises flagged};
+		\end{tikzpicture}
+
+		\vspace{0.5em}
+		\footnotesize \textbf{12/29} crises caught, 17 missed; \textbf{20/20} low-severity
+		false alarms parked in the zero-cost amber bucket.
+		\column{0.54\textwidth}
+		\centering
+		\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{figures/copod_05_risk_managed_equity_curve.pdf}\\
+		{\scriptsize Amber rotates to cash -- out-of-sample wealth 1.80, DD $-18.4\%$.}
+	\end{columns}
+\end{frame}
+
 \begin{frame}{Cross-model scoreboard (out-of-sample test)}
 	\begin{columns}[T,onlytextwidth]
 		\column{0.6\textwidth}
