@@ -31,6 +31,14 @@
 	\end{minipage}%
 }
 
+\newcommand{\metric}[2]{%
+	\begin{minipage}{0.92\linewidth}
+		\centering
+		{\large\textbf{\textcolor{accent}{#1}}}\\[-0.15em]
+		{\scriptsize #2}
+	\end{minipage}%
+}
+
 \title{Detecting Abnormal Markets}
 \subtitle{Early Warning Systems with Deep \& Classical Anomaly Detection}
 \date{\today}
@@ -239,7 +247,7 @@
     \begin{columns}[T,onlytextwidth]
 
         % Left: bullet points
-        \begin{column}{0.52\textwidth}
+        \begin{column}{0.42\textwidth}
             \begin{itemize}
                 \footnotesize
                 \item Weekly data collection.
@@ -249,7 +257,7 @@
         \end{column}
 
         % Right: second graph
-        \begin{column}{0.65\textwidth}
+        \begin{column}{0.54\textwidth}
             \centering
             \includegraphics[
                 width=\textwidth,
@@ -529,7 +537,7 @@ The goal is to extract more informative signals for anomaly detection.
 		\column{0.6\textwidth}
 		\vspace{0.3em}
 		\small
-		\setlength{\tabcolsep}{4.5pt}
+			\setlength{\tabcolsep}{3.5pt}
 		\begin{tabular}{lcccc}
 			\toprule
 			Detector                  & Caught         & Recall          & Prec.           & F2             \\
